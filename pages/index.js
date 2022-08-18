@@ -26,14 +26,16 @@ export default function Home() {
 
       <Navbar bg="light" variant="light">
         <Container>
-          <Navbar.Brand>
-            <img
-              src="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"
-              alt="Studierendenvertretung TH Ingolstadt"
-              className={`d-inline-block align-top ${styles.logo}`}
-            />{' '}
-            AssemblyVoting
-          </Navbar.Brand>
+          <Link href="../">
+            <Navbar.Brand>
+              <img
+                src="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"
+                alt="Studierendenvertretung TH Ingolstadt"
+                className={`d-inline-block align-top ${styles.logo}`}
+              />{' '}
+              AssemblyVoting
+            </Navbar.Brand>
+          </Link>
           <Hamburger toggled={isOpen} onToggle={setOpen}/>
         </Container>
 
