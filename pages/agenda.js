@@ -1,12 +1,12 @@
 import React, {useState} from 'react'
 import Head from 'next/head'
-import {Button, ButtonGroup, Card, Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
+import {Card, Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
 import Link from "next/link";
 
-export default function Home() {
+export default function Admin() {
   const [isOpen, setOpen] = useState(false)
   const handleToggle = () => {
     if (isOpen) {
@@ -63,7 +63,6 @@ export default function Home() {
                   <h4>Administration</h4>
                 </Link>
               </li>
-
               <li>
                 <Form.Check
                   type="checkbox"
@@ -79,52 +78,9 @@ export default function Home() {
 
       <>
         <Card className={styles.card}>
-          <Card.Title>TOP 1: Beschlussfähigkeit</Card.Title>
-          <Card.Subtitle>Current Agenda Item</Card.Subtitle>
+          <Card.Title>Agenda</Card.Title>
           <Card.Body>
-
-          </Card.Body>
-          <Card.Footer>
-            <Link href="agenda">
-              <Button>
-                Zur vollständigen Agenda
-              </Button>
-            </Link>
-          </Card.Footer>
-        </Card>
-
-        <Card className={styles.card}>
-          <Card.Title>Speakers' List</Card.Title>
-          <Card.Subtitle>Nicht quotiert</Card.Subtitle>
-          <Card.Body>
-            <ol>
-              <li>Franz Zimmermann</li>
-            </ol>
-          </Card.Body>
-        </Card>
-
-        <Card className={styles.card}>
-          <Card.Title>Current Voting</Card.Title>
-          <Card.Subtitle>Is there a current question?</Card.Subtitle>
-          <Card.Body>
-            <ButtonGroup variant="contained" aria-label="outlined primary button group">
-              <Button>Ja</Button>
-              <Button>Nein</Button>
-              <Button>Enthaltung</Button>
-            </ButtonGroup>
-            <Button>Submit Vote</Button>
-          </Card.Body>
-        </Card>
-
-        <Card className={styles.card}>
-          <Card.Title>Voting History</Card.Title>
-          <Card.Body>
-            <Card className={styles.card}>
-              <Card.Title>Questiontitle</Card.Title>
-              <Card.Body>
-                8 JA | 9 NEIN | 5 Enthaltung
-              </Card.Body>
-            </Card>
+            TOP 1: Beschlussfähigkeit
           </Card.Body>
         </Card>
       </>

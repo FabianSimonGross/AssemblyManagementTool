@@ -1,9 +1,10 @@
 import React, {useState} from 'react'
 import Head from 'next/head'
-import {Button, ButtonGroup, Card, Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
-import styles from '../../styles/Home.module.css'
+import {Button, Card, Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
+import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
+import Link from "next/link";
 
 export default function Admin() {
   const [isOpen, setOpen] = useState(false)
@@ -43,16 +44,22 @@ export default function Admin() {
                 <Hamburger toggled={isOpen} onToggle={setOpen}/>
               </li>
               <li>
-                <h4>Dashboard</h4>
+                <Link href="../">
+                  <h4>Dashboard</h4>
+                </Link>
               </li>
               <li>
-                <h4>Agenda</h4>
+                <Link href="agenda">
+                  <h4>Agenda</h4>
+                </Link>
               </li>
               <li>
-                <h4>Voting History</h4>
+                <Link href="votinghistory">
+                  <h4>Voting History</h4>
+                </Link>
               </li>
               <li>
-                <Link>
+                <Link href="admin">
                   <h4>Administration</h4>
                 </Link>
               </li>
@@ -73,14 +80,23 @@ export default function Admin() {
         <Card className={styles.card}>
           <Card.Title>Agenda</Card.Title>
           <Card.Body>
-            TOP 1: Beschlussfähigkeit
+            <Form.Check
+                type="checkbox"
+                id="stay-logged-in"
+                label="TOP 1: Beschlussfähigkeit"
+                /**onChange*/
+            />
           </Card.Body>
           <Card.Footer>
+            <fieldset>
+              <label htmlFor={"agendaitem"}>Agenda Item Input:</label><br/>
+              <input type={"text"} id={"agendaitem"} name={"agendaitem"}/><br/>
+            </fieldset><br/>
             <Button className={styles.button} variant={"outline-success"}>
               Add Agenda Item
             </Button>
             <Button className={styles.button} variant={"outline-danger"}>
-              Remove Agenda Item
+              Remove Agenda Items
             </Button>
             <Button className={styles.button} variant={"danger"}>
               Clear Agenda
@@ -89,14 +105,16 @@ export default function Admin() {
         </Card>
 
         <Card className={styles.card}>
-          <Card.Title>Current Voting</Card.Title>
-          <Card.Subtitle>Is there a current question?</Card.Subtitle>
+          <Card.Title>Voting Administration</Card.Title>
+          <Card.Subtitle>Current Question in Green</Card.Subtitle>
           <Card.Body>
-            <ButtonGroup variant="contained" aria-label="outlined primary button group">
-              <Button>Ja</Button>
-              <Button>Nein</Button>
-              <Button>Enthaltung</Button>
-            </ButtonGroup>
+            <fieldset>
+              <label for={"question"}>The Question:</label><br/>
+              <input type={"text"} id={"question"} name={"question"} /><br/><br/>
+              <label for={"type"}>The Question Type:</label><br/>
+              <input type={"radio"} id={"type"} name={"type"} value={"Yes/No/Abstention"}/><span> Yes/No/Abstention</span><br/>
+              <input type={"radio"} id={"type"} name={"type"} value={"Yes/No"}/><span> Yes/No</span>
+            </fieldset>
           </Card.Body>
           <Card.Footer>
             <Button className={styles.button} variant={"outline-success"}>
@@ -125,6 +143,17 @@ export default function Admin() {
             </Card>
           </Card.Body>
           <Card.Footer>
+            <fieldset>
+              <label for={"analogquestion"}>The Question:</label><br/>
+              <input type={"text"} id={"analogquestion"} name={"analogquestion"} /><br/><br/>
+              <label for={"analogtype"}>The Question Type:</label><br/>
+              <input type={"radio"} id={"analogtype"} name={"analogtype"} value={"Yes/No/Abstention"}/><span> Yes/No/Abstention</span><br/>
+              <input type={"radio"} id={"analogtype"} name={"analogtype"} value={"Yes/No"}/><span> Yes/No</span>
+              <label>Results</label><br/><br/>
+              <input type={"text"} id={"yesresult"} name={"analogquestion"} placeholder={"YES: 6"}/><br/>
+              <input type={"text"} id={"noresult"} name={"analogquestion"} placeholder={"NO: 6"}/><br/>
+              <input type={"text"} id={"abstresult"} name={"analogquestion"} placeholder={"ABSTENTION: 6"}/><br/>
+            </fieldset><br/>
             <Button className={styles.button} variant={"outline-success"}>
               Add Analog Voting
             </Button>
@@ -146,7 +175,7 @@ export default function Admin() {
             <Button className={styles.button} variant={"outline-success"}>
               Add Speaker
             </Button>
-            <Button className={styles.button} variant={"warning"}>
+            <Button className={styles.button} variant={"outline-warning"}>
               Activate quotation
             </Button>
             <Button className={styles.button} variant={"danger"}>
