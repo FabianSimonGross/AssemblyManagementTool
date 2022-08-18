@@ -111,11 +111,8 @@ export default function Admin() {
           <Card.Subtitle>Current Question in Green</Card.Subtitle>
           <Card.Body>
             <fieldset>
-              <label for={"question"}>The Question:</label><br/>
-              <input type={"text"} id={"question"} name={"question"} /><br/><br/>
-              <label for={"type"}>The Question Type:</label><br/>
-              <input type={"radio"} id={"type"} name={"type"} value={"Yes/No/Abstention"}/><span> Yes/No/Abstention</span><br/>
-              <input type={"radio"} id={"type"} name={"type"} value={"Yes/No"}/><span> Yes/No</span>
+              <label htmlFor={"question"}>The Question:</label><br/>
+              <input type={"text"} id={"question"} name={"question"}/>
             </fieldset>
           </Card.Body>
           <Card.Footer>
@@ -145,17 +142,15 @@ export default function Admin() {
             </Card>
           </Card.Body>
           <Card.Footer>
-            <fieldset>
-              <label for={"analogquestion"}>The Question:</label><br/>
-              <input type={"text"} id={"analogquestion"} name={"analogquestion"} /><br/><br/>
-              <label for={"analogtype"}>The Question Type:</label><br/>
-              <input type={"radio"} id={"analogtype"} name={"analogtype"} value={"Yes/No/Abstention"}/><span> Yes/No/Abstention</span><br/>
-              <input type={"radio"} id={"analogtype"} name={"analogtype"} value={"Yes/No"}/><span> Yes/No</span>
-              <label>Results</label><br/><br/>
+            <form>
+              <label htmlFor={"analogquestion"}>Question:</label><br/>
+              <input type={"text"} id={"analogquestion"} name={"analogquestion"}/><br/>
+              <label>Results:</label><br/>
               <input type={"text"} id={"yesresult"} name={"analogquestion"} placeholder={"YES: 6"}/><br/>
               <input type={"text"} id={"noresult"} name={"analogquestion"} placeholder={"NO: 6"}/><br/>
               <input type={"text"} id={"abstresult"} name={"analogquestion"} placeholder={"ABSTENTION: 6"}/><br/>
-            </fieldset><br/>
+            </form>
+            <br/>
             <Button className={styles.button} variant={"outline-success"}>
               Add Analog Voting
             </Button>
@@ -170,15 +165,39 @@ export default function Admin() {
           <Card.Subtitle>Nicht quotiert</Card.Subtitle>
           <Card.Body>
             <ol>
-              <li>Franz Zimmermann</li>
+              <li>
+                <Form.Check
+                  type="checkbox"
+                  id="stay-logged-in"
+                  label="Franz Zimmermann"
+                  /**onChange*/
+                />
+              </li>
             </ol>
           </Card.Body>
           <Card.Footer>
+            <form>
+              <label htmlFor={"speakername"}>Speaker:</label><br/>
+              <input type={"text"} id={"speakername"} name={"speakername"}/><br/>
+
+              <input type={"radio"} id={"men"} name={"gender"}/>
+              <label htmlFor={"men"}> Men</label><br/>
+
+              <input type={"radio"} id={"women"} name={"gender"}/>
+              <label htmlFor={"women"}> Women</label> <br/>
+
+              <input type={"radio"} id={"diverse"} name={"gender"}/>
+              <label htmlFor={"diverse"}> Diverse</label> <br/>
+            </form>
+            <br/>
             <Button className={styles.button} variant={"outline-success"}>
               Add Speaker
             </Button>
             <Button className={styles.button} variant={"outline-warning"}>
               Activate quotation
+            </Button>
+            <Button className={styles.button} variant={"outline-danger"}>
+              Remove Speakers
             </Button>
             <Button className={styles.button} variant={"danger"}>
               Clear Speakers' List
