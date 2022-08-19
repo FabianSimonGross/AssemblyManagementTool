@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Head from 'next/head'
 import {Button, Card, Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
 import styles from '../styles/Home.module.css'
@@ -6,47 +6,12 @@ import styles from '../styles/Home.module.css'
 import Hamburger from 'hamburger-react'
 import Link from "next/link";
 
-import axios from 'axios';
-import PropTypes from "prop-types";
+import AgendaCard from "../components/admin/AgendaCard";
 
-
-async function onAgendaAddSubmit(value) {
-  let data = {title: value}
-  axios.post('/api/agenda/add', data)
-    .then(() => {
-      console.log(value)
-    })
-    .catch((e) => {
-      console.error(e)
-    })
-}
-
-async function onAgendaClearSubmit() {
-  axios.post('/api/agenda/clear')
-    .then(() => {
-    })
-    .catch((e) => {
-      console.error(e)
-    })
-}
-
-export async function getServerSideProps() {
-  const response = await fetch('http://localhost:3000/api/agenda/retrieve')
-  const pointsOfOrder = await response.json()
-
-  return {
-    props: {
-      pointsOfOrder
-    }
-  }
-}
-
-Admin.propTypes = {
-  pointsOfOrder: PropTypes.array
-}
-
-function Admin({pointsOfOrder}) {
-  const [agendaItem, setAgendaItem] = useState('')
+export default function Admin() {
+  /**
+   * Managing of the Hamburger Menu
+   */
   const [isOpen, setOpen] = useState(false)
   const handleToggle = () => {
     if (isOpen) {
@@ -56,11 +21,24 @@ function Admin({pointsOfOrder}) {
     }
   }
 
+  /**
+   * Retrieving Data for the Agenda Card
+   */
+  const [agendaItems, setAgendaItems] = useState([])
+  useEffect(() => {
+    async function load() {
+      const response = await fetch('/api/agenda/retrieve');
+      const agendaItems = await response.json();
+      setAgendaItems(agendaItems)
+    }
+    load()
+  })
+
   return (
     <>
       <Head>
         <title>AssemblyVoting</title>
-        <meta name="description" content="Digital Voting for Assemblys by Neuland Ingolstadt"/>
+        <meta name="description" content="Digital Voting for Assembly's by Neuland Ingolstadt"/>
         <link rel="icon" href="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"/>
       </Head>
 
@@ -119,35 +97,7 @@ function Admin({pointsOfOrder}) {
       </Navbar>
 
       <>
-        <Card className={styles.card}>
-          <Card.Title>Agenda</Card.Title>
-
-          <Card.Body>
-            <Form id={"pointsOfOrder"}>
-              {pointsOfOrder?.map((item, idx) => {
-                return <Form.Check type={"checkbox"} id={item.title} label={item.title} key={idx} />
-              })}
-            </Form>
-          </Card.Body>
-
-          <Card.Footer>
-            <fieldset>
-              <label htmlFor={"agendaitem"}>Agenda Item Input:</label><br/>
-              <input type={"text"} id={"agendaitem"} name={"agendaitem"} value={agendaItem} onChange={e => setAgendaItem(e.target.value)}/><br/>
-            </fieldset>
-            <br/>
-            <Button className={styles.button} variant={"outline-success"} onClick={() => onAgendaAddSubmit(agendaItem)}>
-              Add Agenda Item
-            </Button>
-            <Button className={styles.button} variant={"outline-danger"}>
-              Remove Agenda Items
-            </Button>
-            <Button className={styles.button} variant={"danger"} onClick={() => onAgendaClearSubmit()}>
-              Clear Agenda
-            </Button>
-          </Card.Footer>
-
-        </Card>
+        <AgendaCard pointsOfOrder={agendaItems}/>
 
         <Card className={styles.card}>
           <Card.Title>Voting Administration</Card.Title>
@@ -252,5 +202,3 @@ function Admin({pointsOfOrder}) {
     </>
   )
 }
-
-export default Admin

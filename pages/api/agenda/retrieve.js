@@ -9,7 +9,7 @@ export default function handler(req, res) {
     }).then(r => {
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
-      res.setHeader('Cache-Control', 'max-age=180000')
+      res.setHeader('Cache-Control', 'max-age=1')
       res.end(JSON.stringify(r))
       resolve()
     }).catch(error => {
