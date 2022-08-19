@@ -37,7 +37,7 @@ export default function AgendaCard({ pointsOfOrder }) {
     <Card.Body>
       <Form id={"pointsOfOrder"}>
         {pointsOfOrder.map((item, idx) => {
-          return <Form.Check type={"checkbox"} id={item.title} label={item.title} key={idx} />
+          return <Form.Check type={"checkbox"} id={item.title} label={item.title} key={idx}/>
         })}
       </Form>
     </Card.Body>

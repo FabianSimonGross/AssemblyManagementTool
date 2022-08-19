@@ -3,7 +3,7 @@ import executeQuery from "../../../lib/db";
 export default async function handler(req, res) {
   return new Promise(async (resolve) => {
     await executeQuery({
-      query: 'DELETE FROM agendaitems WHERE TITLE=(?)',
+      query: 'DELETE FROM agendaitems WHERE title=(?)',
       values: [req.body.title],
     }).then(r => {
       res.statusCode = 200

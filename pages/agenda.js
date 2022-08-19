@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Head from 'next/head'
 import {Card, Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
 import styles from '../styles/Home.module.css'
@@ -6,7 +6,7 @@ import styles from '../styles/Home.module.css'
 import Hamburger from 'hamburger-react'
 import Link from "next/link";
 
-export default function Admin() {
+export default function Agenda() {
   const [isOpen, setOpen] = useState(false)
   const handleToggle = () => {
     if (isOpen) {
@@ -15,6 +15,17 @@ export default function Admin() {
       setOpen(true)
     }
   }
+
+  const [agendaItems, setAgendaItems] = useState([])
+  useEffect(() => {
+    async function load() {
+      const response = await fetch('/api/agenda/retrieve');
+      const agendaItems = await response.json();
+      setAgendaItems(agendaItems)
+    }
+
+    load()
+  })
 
   return (
     <>
@@ -79,12 +90,17 @@ export default function Admin() {
       </Navbar>
 
       <>
-        <Card className={styles.card}>
-          <Card.Title>Agenda</Card.Title>
-          <Card.Body>
-            TOP 1: Beschlussfähigkeit
-          </Card.Body>
-        </Card>
+        <center>
+          <h3>Agenda</h3>
+        </center>
+
+        {agendaItems.map((item, idx) => {
+          return  <Card className={styles.card} key={idx}>
+                    <Card.Title>{item.title}</Card.Title>
+                    <Card.Body>
+                    </Card.Body>
+                  </Card>
+        })}
       </>
 
     </>
