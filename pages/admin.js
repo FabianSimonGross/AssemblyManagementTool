@@ -6,7 +6,47 @@ import styles from '../styles/Home.module.css'
 import Hamburger from 'hamburger-react'
 import Link from "next/link";
 
-export default function Admin() {
+import axios from 'axios';
+import PropTypes from "prop-types";
+
+
+async function onAgendaAddSubmit(value) {
+  let data = {title: value}
+  axios.post('/api/agenda/add', data)
+    .then(() => {
+      console.log(value)
+    })
+    .catch((e) => {
+      console.error(e)
+    })
+}
+
+async function onAgendaClearSubmit() {
+  axios.post('/api/agenda/clear')
+    .then(() => {
+    })
+    .catch((e) => {
+      console.error(e)
+    })
+}
+
+export async function getServerSideProps() {
+  const response = await fetch('http://localhost:3000/api/agenda/retrieve')
+  const pointsOfOrder = await response.json()
+
+  return {
+    props: {
+      pointsOfOrder
+    }
+  }
+}
+
+Admin.propTypes = {
+  pointsOfOrder: PropTypes.array
+}
+
+function Admin({pointsOfOrder}) {
+  const [agendaItem, setAgendaItem] = useState('')
   const [isOpen, setOpen] = useState(false)
   const handleToggle = () => {
     if (isOpen) {
@@ -81,29 +121,32 @@ export default function Admin() {
       <>
         <Card className={styles.card}>
           <Card.Title>Agenda</Card.Title>
+
           <Card.Body>
-            <Form.Check
-                type="checkbox"
-                id="stay-logged-in"
-                label="TOP 1: Beschlussfähigkeit"
-                /**onChange*/
-            />
+            <Form id={"pointsOfOrder"}>
+              {pointsOfOrder?.map((item, idx) => {
+                return <Form.Check type={"checkbox"} id={item.title} label={item.title} key={idx} />
+              })}
+            </Form>
           </Card.Body>
+
           <Card.Footer>
             <fieldset>
               <label htmlFor={"agendaitem"}>Agenda Item Input:</label><br/>
-              <input type={"text"} id={"agendaitem"} name={"agendaitem"}/><br/>
-            </fieldset><br/>
-            <Button className={styles.button} variant={"outline-success"}>
+              <input type={"text"} id={"agendaitem"} name={"agendaitem"} value={agendaItem} onChange={e => setAgendaItem(e.target.value)}/><br/>
+            </fieldset>
+            <br/>
+            <Button className={styles.button} variant={"outline-success"} onClick={() => onAgendaAddSubmit(agendaItem)}>
               Add Agenda Item
             </Button>
             <Button className={styles.button} variant={"outline-danger"}>
               Remove Agenda Items
             </Button>
-            <Button className={styles.button} variant={"danger"}>
+            <Button className={styles.button} variant={"danger"} onClick={() => onAgendaClearSubmit()}>
               Clear Agenda
             </Button>
           </Card.Footer>
+
         </Card>
 
         <Card className={styles.card}>
@@ -209,3 +252,5 @@ export default function Admin() {
     </>
   )
 }
+
+export default Admin

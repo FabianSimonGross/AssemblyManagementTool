@@ -89,7 +89,7 @@ export default function Home() {
           <Card.Footer>
             <Link href="agenda">
               <Button>
-                Zur vollständigen Agenda
+                To the Agenda
               </Button>
             </Link>
           </Card.Footer>
@@ -110,11 +110,10 @@ export default function Home() {
           <Card.Subtitle>Is there a current question?</Card.Subtitle>
           <Card.Body>
             <ButtonGroup variant="contained" aria-label="outlined primary button group">
-              <Button>Ja</Button>
-              <Button>Nein</Button>
-              <Button>Enthaltung</Button>
+              <Button>YES</Button>
+              <Button>NO</Button>
+              <Button>ABSTENTION</Button>
             </ButtonGroup>
-            <Button>Submit Vote</Button>
           </Card.Body>
         </Card>
 
