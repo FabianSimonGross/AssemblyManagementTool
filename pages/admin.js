@@ -10,6 +10,7 @@ import AgendaCard from "../components/admin/AgendaCard";
 import SpeakerCard from "../components/admin/SpeakerCard";
 import {useRouter} from "next/router";
 import VotingAdminCard from "../components/admin/VotingAdminCard";
+import VotingHistoryAdminCard from "../components/admin/VotingHistoryAdminCard";
 
 export default function Admin() {
   const router = useRouter()
@@ -31,6 +32,7 @@ export default function Admin() {
    */
   const [agendaItems, setAgendaItems] = useState([])
   const [speakersItems, setSpeakersItems] = useState([])
+  const [motionItems, setMotionsItems] = useState([])
   useEffect(() => {
     async function load() {
       const agendaResponse = await fetch('/api/agenda/retrieve');
@@ -40,6 +42,10 @@ export default function Admin() {
       const speakersResponse = await fetch('/api/speakers/retrieve');
       const speakersItems = await speakersResponse.json();
       setSpeakersItems(speakersItems)
+
+      const motionResponse = await fetch('/api/voting/retrieve');
+      const motionItems = await motionResponse.json();
+      setMotionsItems(motionItems)
     }
 
     load()
@@ -114,7 +120,7 @@ export default function Admin() {
 
         <VotingAdminCard/>
 
-        <VotingAdminCard/>
+        <VotingHistoryAdminCard votingItems={motionItems}/>
 
       </>
     </>

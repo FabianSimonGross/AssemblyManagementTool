@@ -1,12 +1,16 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Head from 'next/head'
-import {Card, Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
+import {Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
 import Link from "next/link";
+import HistoryCard from "../components/voting/HistoryCard";
 
 export default function Admin() {
+  /**
+   * Managing of the Hamburger Menu
+   */
   const [isOpen, setOpen] = useState(false)
   const handleToggle = () => {
     if (isOpen) {
@@ -15,6 +19,19 @@ export default function Admin() {
       setOpen(true)
     }
   }
+
+  /**
+   * Retrieving Data for the Cards
+   */
+  const [motionItems, setMotionsItems] = useState([])
+  useEffect(() => {
+    async function load() {
+      const motionResponse = await fetch('/api/voting/retrieve');
+      const motionItems = await motionResponse.json();
+      setMotionsItems(motionItems)
+    }
+    load()
+  }, [])
 
   return (
     <>
@@ -79,17 +96,14 @@ export default function Admin() {
       </Navbar>
 
       <>
-        <Card className={styles.card}>
-          <Card.Title>Voting History</Card.Title>
-          <Card.Body>
-            <Card className={styles.card}>
-              <Card.Title>Questiontitle</Card.Title>
-              <Card.Body>
-                8 JA | 9 NEIN | 5 Enthaltung
-              </Card.Body>
-            </Card>
-          </Card.Body>
-        </Card>
+        <center>
+          <h3 className={styles.title}>Voting History</h3>
+        </center>
+
+        {motionItems.map((item, idx) => {
+          return <HistoryCard key={idx} data={item}/>
+        })}
+
       </>
 
     </>

@@ -38,3 +38,7 @@
 .button {
     margin: 0 .5vh;
 }
+
+.doughnut {
+    max-height: 250px;
+}

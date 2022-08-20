@@ -1,12 +1,16 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Head from 'next/head'
 import {Button, ButtonGroup, Card, Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
 import Link from "next/link";
+import HistoryCard from "../components/voting/HistoryCard";
 
 export default function Home() {
+  /**
+   * Managing of the Hamburger Menu
+   */
   const [isOpen, setOpen] = useState(false)
   const handleToggle = () => {
     if (isOpen) {
@@ -15,6 +19,30 @@ export default function Home() {
       setOpen(true)
     }
   }
+
+  /**
+   * Retrieving Data for the Cards
+   */
+  const [motionItems, setMotionsItems] = useState([])
+  const [agendaItems, setAgendaItems] = useState([])
+  const [speakersItems, setSpeakersItems] = useState([])
+  useEffect(() => {
+    async function load() {
+      const motionResponse = await fetch('/api/voting/retrieve');
+      const motionItems = await motionResponse.json();
+      setMotionsItems(motionItems)
+
+      const agendaResponse = await fetch('/api/agenda/retrieve');
+      const agendaItems = await agendaResponse.json();
+      setAgendaItems(agendaItems)
+
+      const speakersResponse = await fetch('/api/speakers/retrieve');
+      const speakersItems = await speakersResponse.json();
+      setSpeakersItems(speakersItems)
+    }
+
+    load()
+  }, [])
 
   return (
     <>
@@ -100,7 +128,9 @@ export default function Home() {
           <Card.Subtitle>Nicht quotiert</Card.Subtitle>
           <Card.Body>
             <ol>
-              <li>Franz Zimmermann</li>
+              {speakersItems.map((item, idx) => {
+                return <li key={idx}>{item.name}</li>
+              })}
             </ol>
           </Card.Body>
         </Card>
@@ -120,12 +150,9 @@ export default function Home() {
         <Card className={styles.card}>
           <Card.Title>Voting History</Card.Title>
           <Card.Body>
-            <Card className={styles.card}>
-              <Card.Title>Questiontitle</Card.Title>
-              <Card.Body>
-                8 JA | 9 NEIN | 5 Enthaltung
-              </Card.Body>
-            </Card>
+            {motionItems.map((item, idx) => {
+              return <HistoryCard key={idx} data={item}/>
+            })}
           </Card.Body>
         </Card>
       </>
