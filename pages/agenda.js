@@ -91,18 +91,18 @@ export default function Agenda() {
 
       <>
         <center>
-          <h3>Agenda</h3>
+          <h3 className={styles.title}>Agenda</h3>
         </center>
 
         {agendaItems.map((item, idx) => {
           return  <Card className={styles.card} key={idx}>
                     <Card.Title>{item.title}</Card.Title>
                     <Card.Body>
+
                     </Card.Body>
                   </Card>
         })}
       </>
-
     </>
   )
 }
