@@ -9,10 +9,18 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function HistoryCard (data) {
   const dataset = {
-    labels: ['YES', 'NO', 'ABSTENTION'],
+    labels: [
+      'YES',
+      'NO',
+      'ABSTENTION'
+    ],
     datasets: [
       {
-        data: [data.data.yes, data.data.no, data.data.abstention],
+        data: [
+          data.data.yes,
+          data.data.no,
+          data.data.abstention
+        ],
         backgroundColor: [
           '#A2CD5A',
           '#CD5555',

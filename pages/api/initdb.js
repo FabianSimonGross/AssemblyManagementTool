@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   return new Promise(async () => {
     await excuteQuery({
-      query: "CREATE TABLE IF NOT EXISTS `voting`.`motions` ( `id` INT NOT NULL AUTO_INCREMENT, `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `yes` INT NOT NULL , `no` INT NOT NULL , `abstention` INT NOT NULL , `active` TINYINT(1), `title` TEXT NOT NULL, PRIMARY KEY (id))",
+      query: "CREATE TABLE IF NOT EXISTS `voting`.`motions` ( `id` INT NOT NULL AUTO_INCREMENT, `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `yes` INT , `no` INT , `abstention` INT , `active` TINYINT(1), `title` TEXT NOT NULL, PRIMARY KEY (id))",
       values: null
     }).then(() => {
       res.statusCode = 200

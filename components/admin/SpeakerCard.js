@@ -12,7 +12,6 @@ async function onSpeakerAddSubmit(speakerName, gender) {
 
   axios.post('/api/speakers/add', data)
     .then(() => {
-      console.log(data)
     }).catch(error => {
     console.error(error)
   })

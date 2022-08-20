@@ -46,7 +46,7 @@ export default function Admin() {
       setMotionsItems(motionItems)
     }
 
-    load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
+    load().then(setTimeout(() => setRefreshToken(Math.random()), 2500))
   }, [refreshToken])
 
   return (

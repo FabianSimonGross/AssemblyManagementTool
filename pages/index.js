@@ -33,7 +33,7 @@ export default function Home() {
       const motionItems = await motionResponse.json();
       setMotionsItems(motionItems)
 
-      const agendaResponse = await fetch('/api/agenda/retrieve');
+      const agendaResponse = await fetch('/api/agenda/retrievecurrent');
       const agendaItems = await agendaResponse.json();
       setAgendaItems(agendaItems)
 
@@ -111,7 +111,11 @@ export default function Home() {
 
       <>
         <Card className={styles.card}>
-          <Card.Title>TOP 1: Beschlussfähigkeit</Card.Title>
+          {agendaItems.map((item, idx) => {
+            return <Card.Title key={idx}>{item.title}</Card.Title>
+          })}
+
+          {agendaItems.length < 1 && <Card.Title>NO CURRENT AGENDA ITEM</Card.Title>}
           <Card.Subtitle>Current Agenda Item</Card.Subtitle>
           <Card.Body>
 
