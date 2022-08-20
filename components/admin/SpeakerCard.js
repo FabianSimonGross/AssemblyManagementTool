@@ -12,6 +12,7 @@ async function onSpeakerAddSubmit(speakerName, gender) {
 
   axios.post('/api/speakers/add', data)
     .then(() => {
+      console.info('ADD_SPEAKER', data)
     }).catch(error => {
     console.error(error)
   })
@@ -24,6 +25,7 @@ async function onSpeakerRemoveSubmit() {
 async function onSpeakerClearSubmit() {
   axios.post('/api/speakers/clear')
     .then(() => {
+      console.info('CLEAR_SPEAKERS')
     })
     .catch(error => {
       console.error(error)

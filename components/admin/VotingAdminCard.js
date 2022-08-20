@@ -11,7 +11,7 @@ function onNewVotingSubmit(title) {
 
   axios.post('/api/voting/setnewactivevote', data)
     .then(() => {
-      console.log(data)
+      console.info('SET_NEW_ACTIVE_VOTE',data)
     }).catch(error => {
     console.error(error)
   })

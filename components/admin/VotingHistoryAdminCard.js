@@ -14,9 +14,18 @@ function onAnalogeVotingSubmit(title,yes,no,abstention) {
 
   axios.post('/api/voting/addanalogue', data)
     .then(() => {
-      console.log('ADD_ANALOGE')
+      console.info('ADD_ANALOGE', data)
     }).catch(error => {
     console.error(error)
+  })
+}
+
+function onVotingHistoryClearSubmit() {
+  axios.post('/api/voting/clear')
+    .then(() => {
+      console.info('CLEAR_VOTING_HISTORY')
+    }).catch(error => {
+      console.error(error)
   })
 }
 
@@ -75,7 +84,7 @@ export default function VotingHistoryAdminCard({ votingItems }) {
       <Button className={styles.button} variant={"outline-success"} onClick={() => onAnalogeVotingSubmit(question,yes,no,abs)}>
         Add Analog Voting
       </Button>
-      <Button className={styles.button} variant={"danger"}>
+      <Button className={styles.button} variant={"danger"} onClick={() => onVotingHistoryClearSubmit()}>
         Clear Voting History
       </Button>
     </Card.Footer>

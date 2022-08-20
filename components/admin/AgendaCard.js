@@ -8,7 +8,7 @@ async function onAgendaAddSubmit(value) {
   const data = {title: value}
   axios.post('/api/agenda/add', data)
     .then(() => {
-      console.log(value)
+      console.info('ADD_AGENDA', data)
     })
     .catch((e) => {
       console.error(e)
@@ -19,6 +19,7 @@ async function onAgendaAddSubmit(value) {
 async function onAgendaClearSubmit() {
   axios.post('/api/agenda/clear')
     .then(() => {
+      console.info('CLEAR_AGENDA')
     })
     .catch((e) => {
       console.error(e)
