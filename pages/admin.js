@@ -1,14 +1,19 @@
 import React, {useEffect, useState} from 'react'
 import Head from 'next/head'
-import {Button, Card, Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
+import {Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
 import Link from "next/link";
 
 import AgendaCard from "../components/admin/AgendaCard";
+import SpeakerCard from "../components/admin/SpeakerCard";
+import {useRouter} from "next/router";
+import VotingAdminCard from "../components/admin/VotingAdminCard";
 
 export default function Admin() {
+  const router = useRouter()
+
   /**
    * Managing of the Hamburger Menu
    */
@@ -22,17 +27,23 @@ export default function Admin() {
   }
 
   /**
-   * Retrieving Data for the Agenda Card
+   * Retrieving Data for the Cards
    */
   const [agendaItems, setAgendaItems] = useState([])
+  const [speakersItems, setSpeakersItems] = useState([])
   useEffect(() => {
     async function load() {
-      const response = await fetch('/api/agenda/retrieve');
-      const agendaItems = await response.json();
+      const agendaResponse = await fetch('/api/agenda/retrieve');
+      const agendaItems = await agendaResponse.json();
       setAgendaItems(agendaItems)
+
+      const speakersResponse = await fetch('/api/speakers/retrieve');
+      const speakersItems = await speakersResponse.json();
+      setSpeakersItems(speakersItems)
     }
+
     load()
-  })
+  }, [router])
 
   return (
     <>
@@ -99,106 +110,13 @@ export default function Admin() {
       <>
         <AgendaCard pointsOfOrder={agendaItems}/>
 
-        <Card className={styles.card}>
-          <Card.Title>Voting Administration</Card.Title>
-          <Card.Subtitle>Current Question in Green</Card.Subtitle>
-          <Card.Body>
-            <fieldset>
-              <label htmlFor={"question"}>The Question:</label><br/>
-              <input type={"text"} id={"question"} name={"question"}/>
-            </fieldset>
-          </Card.Body>
-          <Card.Footer>
-            <Button className={styles.button} variant={"outline-success"}>
-              Start new Vote
-            </Button>
-            <Button className={styles.button} variant={"outline-warning"}>
-              Restart Voting
-            </Button>
-            <Button className={styles.button} variant={"outline-danger"}>
-              Stop Voting
-            </Button>
-            <Button className={styles.button} variant={"danger"}>
-              Count Voting
-            </Button>
-          </Card.Footer>
-        </Card>
+        <SpeakerCard speakerItems={speakersItems}/>
 
-        <Card className={styles.card}>
-          <Card.Title>Voting History</Card.Title>
-          <Card.Body>
-            <Card className={styles.card}>
-              <Card.Title>Questiontitle</Card.Title>
-              <Card.Body>
-                8 JA | 9 NEIN | 5 Enthaltung
-              </Card.Body>
-            </Card>
-          </Card.Body>
-          <Card.Footer>
-            <form>
-              <label htmlFor={"analogquestion"}>Question:</label><br/>
-              <input type={"text"} id={"analogquestion"} name={"analogquestion"}/><br/>
-              <label>Results:</label><br/>
-              <input type={"text"} id={"yesresult"} name={"analogquestion"} placeholder={"YES: 6"}/><br/>
-              <input type={"text"} id={"noresult"} name={"analogquestion"} placeholder={"NO: 6"}/><br/>
-              <input type={"text"} id={"abstresult"} name={"analogquestion"} placeholder={"ABSTENTION: 6"}/><br/>
-            </form>
-            <br/>
-            <Button className={styles.button} variant={"outline-success"}>
-              Add Analog Voting
-            </Button>
-            <Button className={styles.button} variant={"danger"}>
-              Clear Voting History
-            </Button>
-          </Card.Footer>
-        </Card>
+        <VotingAdminCard/>
 
-        <Card className={styles.card}>
-          <Card.Title>Speakers' List</Card.Title>
-          <Card.Subtitle>Nicht quotiert</Card.Subtitle>
-          <Card.Body>
-            <ol>
-              <li>
-                <Form.Check
-                  type="checkbox"
-                  id="stay-logged-in"
-                  label="Franz Zimmermann"
-                  /**onChange*/
-                />
-              </li>
-            </ol>
-          </Card.Body>
-          <Card.Footer>
-            <form>
-              <label htmlFor={"speakername"}>Speaker:</label><br/>
-              <input type={"text"} id={"speakername"} name={"speakername"}/><br/>
+        <VotingAdminCard/>
 
-              <input type={"radio"} id={"men"} name={"gender"}/>
-              <label htmlFor={"men"}> Men</label><br/>
-
-              <input type={"radio"} id={"women"} name={"gender"}/>
-              <label htmlFor={"women"}> Women</label> <br/>
-
-              <input type={"radio"} id={"diverse"} name={"gender"}/>
-              <label htmlFor={"diverse"}> Diverse</label> <br/>
-            </form>
-            <br/>
-            <Button className={styles.button} variant={"outline-success"}>
-              Add Speaker
-            </Button>
-            <Button className={styles.button} variant={"outline-warning"}>
-              Activate quotation
-            </Button>
-            <Button className={styles.button} variant={"outline-danger"}>
-              Remove Speakers
-            </Button>
-            <Button className={styles.button} variant={"danger"}>
-              Clear Speakers' List
-            </Button>
-          </Card.Footer>
-        </Card>
       </>
-
     </>
   )
 }

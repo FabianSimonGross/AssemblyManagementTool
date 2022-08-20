@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     })
 
     await excuteQuery({
-      query: "CREATE TABLE IF NOT EXISTS `voting`.`speakers` ( `id` INT NOT NULL AUTO_INCREMENT, `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `name` TEXT NOT NULL, PRIMARY KEY (id) )",
+      query: "CREATE TABLE IF NOT EXISTS `voting`.`speakers` ( `id` INT NOT NULL AUTO_INCREMENT, `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `name` TEXT NOT NULL, `gender` TEXT NOT NULL, PRIMARY KEY (id))",
       values: null
     }).then(() => {
       res.statusCode = 200

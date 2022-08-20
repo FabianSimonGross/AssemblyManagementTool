@@ -2,12 +2,11 @@ import React, {useState} from 'react'
 import {Button, Card, Form} from "react-bootstrap";
 
 import axios from "axios";
-import PropTypes from "prop-types";
-import Admin from "../../pages/admin";
 import styles from "../../styles/Home.module.css";
+import {router} from "next/client";
 
 async function onAgendaAddSubmit(value) {
-  let data = {title: value}
+  const data = {title: value}
   axios.post('/api/agenda/add', data)
     .then(() => {
       console.log(value)
@@ -16,7 +15,6 @@ async function onAgendaAddSubmit(value) {
       console.error(e)
     })
 
-  axios.get('/api/agenda/retrieve').then()
 }
 
 async function onAgendaClearSubmit() {
@@ -28,10 +26,14 @@ async function onAgendaClearSubmit() {
     })
 }
 
+async function onAgendaRemoveSubmit() {
+
+}
+
 export default function AgendaCard({ pointsOfOrder }) {
   const [agendaItem, setAgendaItem] = useState('')
 
-  return <Card className={styles.card}>
+  return <Card className={styles.card} id={'agenda'}>
     <Card.Title>Agenda</Card.Title>
 
     <Card.Body>
@@ -48,30 +50,30 @@ export default function AgendaCard({ pointsOfOrder }) {
         <input type={"text"} id={"agendaitem"} name={"agendaitem"} value={agendaItem} onChange={e => setAgendaItem(e.target.value)}/><br/>
       </fieldset>
       <br/>
-      <Button className={styles.button} variant={"outline-success"} onClick={() => onAgendaAddSubmit(agendaItem)}>
+
+      <Button className={styles.button}
+              variant={"outline-success"}
+              onClick={() => {
+                onAgendaAddSubmit(agendaItem);
+                router.push('/admin#agenda')
+              }}>
         Add Agenda Item
       </Button>
+
       <Button className={styles.button} variant={"outline-danger"}>
         Remove Agenda Items
       </Button>
-      <Button className={styles.button} variant={"danger"} onClick={() => onAgendaClearSubmit()}>
+
+      <Button className={styles.button}
+              variant={"danger"}
+              onClick={() => {
+                onAgendaClearSubmit()
+                router.push('/admin#agenda')
+              }
+      }>
         Clear Agenda
       </Button>
+
     </Card.Footer>
   </Card>
-}
-
-export async function getServerSideProps() {
-  const response = await fetch('http://localhost:3000/api/agenda/retrieve')
-  const pointsOfOrder = await response.json()
-
-  return {
-    props: {
-      pointsOfOrder
-    }
-  }
-}
-
-Admin.propTypes = {
-  pointsOfOrder: PropTypes.array
 }

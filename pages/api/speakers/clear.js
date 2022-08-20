@@ -1,14 +1,14 @@
 import executeQuery from "../../../lib/db";
 
-export default function handler (req, res) {
+export default async function handler(req, res) {
   return new Promise(async (resolve) => {
     await executeQuery({
-      query: 'SELECT * FROM `agendaitems` ORDER BY `agendaitems`.`title`',
-      values: null
+      query: 'TRUNCATE speakers',
+      values: [req.body.title],
     }).then(r => {
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
-      res.setHeader('Cache-Control', 'max-age=1')
+      res.setHeader('Cache-Control', 'max-age=5')
       res.end(JSON.stringify(r))
       resolve()
     }).catch(error => {
