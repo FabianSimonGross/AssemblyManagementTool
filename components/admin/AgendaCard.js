@@ -3,7 +3,6 @@ import {Button, Card, Form} from "react-bootstrap";
 
 import axios from "axios";
 import styles from "../../styles/Home.module.css";
-import {router} from "next/client";
 
 async function onAgendaAddSubmit(value) {
   const data = {title: value}
@@ -54,8 +53,7 @@ export default function AgendaCard({ pointsOfOrder }) {
       <Button className={styles.button}
               variant={"outline-success"}
               onClick={() => {
-                onAgendaAddSubmit(agendaItem);
-                router.push('/admin#agenda')
+                onAgendaAddSubmit(agendaItem)
               }}>
         Add Agenda Item
       </Button>
@@ -68,7 +66,6 @@ export default function AgendaCard({ pointsOfOrder }) {
               variant={"danger"}
               onClick={() => {
                 onAgendaClearSubmit()
-                router.push('/admin#agenda')
               }
       }>
         Clear Agenda

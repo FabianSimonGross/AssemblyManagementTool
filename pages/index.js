@@ -23,6 +23,7 @@ export default function Home() {
   /**
    * Retrieving Data for the Cards
    */
+  const [refreshToken, setRefreshToken] = useState(Math.random())
   const [motionItems, setMotionsItems] = useState([])
   const [agendaItems, setAgendaItems] = useState([])
   const [speakersItems, setSpeakersItems] = useState([])
@@ -39,10 +40,11 @@ export default function Home() {
       const speakersResponse = await fetch('/api/speakers/retrieve');
       const speakersItems = await speakersResponse.json();
       setSpeakersItems(speakersItems)
+
     }
 
-    load()
-  }, [])
+    load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
+  }, [refreshToken])
 
   return (
     <>

@@ -24,6 +24,8 @@ export default function HistoryCard (data) {
 
   return <Card className={styles.card}>
     <Card.Title>{data.data.title}</Card.Title>
+    {data.data.active < 1 && <Card.Subtitle>Inactive</Card.Subtitle>}
+    {data.data.active > 0 && <Card.Subtitle>Active</Card.Subtitle>}
     <Card.Body>
       <Pie
         className={styles.doughnut}

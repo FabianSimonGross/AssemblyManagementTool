@@ -23,6 +23,7 @@ export default function Admin() {
   /**
    * Retrieving Data for the Cards
    */
+  const [refreshToken, setRefreshToken] = useState(Math.random())
   const [motionItems, setMotionsItems] = useState([])
   useEffect(() => {
     async function load() {
@@ -30,8 +31,8 @@ export default function Admin() {
       const motionItems = await motionResponse.json();
       setMotionsItems(motionItems)
     }
-    load()
-  }, [])
+    load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
+  }, [refreshToken])
 
   return (
     <>

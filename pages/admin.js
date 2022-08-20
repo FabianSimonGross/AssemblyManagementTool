@@ -8,13 +8,10 @@ import Link from "next/link";
 
 import AgendaCard from "../components/admin/AgendaCard";
 import SpeakerCard from "../components/admin/SpeakerCard";
-import {useRouter} from "next/router";
 import VotingAdminCard from "../components/admin/VotingAdminCard";
 import VotingHistoryAdminCard from "../components/admin/VotingHistoryAdminCard";
 
 export default function Admin() {
-  const router = useRouter()
-
   /**
    * Managing of the Hamburger Menu
    */
@@ -30,6 +27,7 @@ export default function Admin() {
   /**
    * Retrieving Data for the Cards
    */
+  const [refreshToken, setRefreshToken] = useState(Math.random())
   const [agendaItems, setAgendaItems] = useState([])
   const [speakersItems, setSpeakersItems] = useState([])
   const [motionItems, setMotionsItems] = useState([])
@@ -48,8 +46,8 @@ export default function Admin() {
       setMotionsItems(motionItems)
     }
 
-    load()
-  }, [router])
+    load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
+  }, [refreshToken])
 
   return (
     <>

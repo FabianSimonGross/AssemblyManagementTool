@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import styles from "../../styles/Home.module.css";
 import {Button, Card, Form} from "react-bootstrap";
 import axios from "axios";
-import {router} from "next/client";
 
 
 async function onSpeakerAddSubmit(speakerName, gender) {
@@ -74,7 +73,6 @@ export default function SpeakerCard ( { speakerItems } ) {
               variant={"outline-success"}
               onClick={() => {
                 onSpeakerAddSubmit(speakerItem, gender)
-                router.push('/admin#speakers')
               }
       }>
         Add Speaker
@@ -92,7 +90,6 @@ export default function SpeakerCard ( { speakerItems } ) {
               variant={"danger"}
               onClick={() => {
                 onSpeakerClearSubmit()
-                router.push('/admin#speakers')
               }
       }>
         Clear Speakers' List
