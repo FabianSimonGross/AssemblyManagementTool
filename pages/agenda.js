@@ -30,7 +30,7 @@ export default function Agenda () {
   return (
     <>
       <Head>
-        <title>AssemblyVoting</title>
+        <title>Assembly Management Tool</title>
         <meta name="description" content="Digital Voting for Assemblys by Neuland Ingolstadt"/>
         <link rel="icon" href="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"/>
       </Head>
@@ -44,7 +44,7 @@ export default function Agenda () {
                 alt="Studierendenvertretung TH Ingolstadt"
                 className={`d-inline-block align-top ${styles.logo}`}
               />{' '}
-              AssemblyVoting
+              Assembly Management Tool
             </Navbar.Brand>
           </Link>
           <Hamburger toggled={isOpen} onToggle={setOpen}/>

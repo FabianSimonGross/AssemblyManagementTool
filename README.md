@@ -1,4 +1,4 @@
-## AssemblyVoting
+## Assembly Management Tool
 
 Free and open source variant of an Assembly Voting and Agenda System.
 
