@@ -1,10 +1,10 @@
-import executeQuery from "../../../lib/db";
+import executeQuery from '../../../lib/db'
 
 export default function handler (req, res) {
   return new Promise(async (resolve) => {
     await executeQuery({
       query: 'INSERT INTO motions(title,active,yes,no,abstention) VALUES(?,?,?,?,?)',
-      values: [req.body.title,req.body.active,0,0,0],
+      values: [req.body.title, req.body.active, 0, 0, 0]
     }).then(r => {
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')

@@ -1,11 +1,11 @@
-import React from "react";
-import {Card} from "react-bootstrap";
-import styles from "../../styles/Home.module.css";
+import React from 'react'
+import { Card } from 'react-bootstrap'
+import styles from '../../styles/Home.module.css'
 
-import {ArcElement, Chart as ChartJS, Legend, Tooltip} from 'chart.js';
-import {Pie} from 'react-chartjs-2';
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js'
+import { Pie } from 'react-chartjs-2'
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend)
 
 export default function HistoryCard (data) {
   const dataset = {
@@ -25,7 +25,7 @@ export default function HistoryCard (data) {
           '#A2CD5A',
           '#CD5555',
           '#D3D3D3'
-        ],
+        ]
       }
     ]
   }

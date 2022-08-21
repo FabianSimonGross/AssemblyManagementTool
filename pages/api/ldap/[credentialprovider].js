@@ -1,18 +1,18 @@
-const ldap = require('ldapjs')
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+const ldap = require('ldapjs')
 
 export default NextAuth({
   providers: [
     CredentialsProvider({
       name: 'LDAP',
       credentials: {
-        username: { label: 'DN', type: 'text', placeholder: ''},
-        password: { label: 'Password', type: 'password'}
+        username: { label: 'DN', type: 'text', placeholder: '' },
+        password: { label: 'Password', type: 'password' }
       },
-      async authorize(credentials, req) {
+      async authorize (credentials, req) {
         const client = ldap.createClient({
-          url: process.env.LDAP_URI,
+          url: process.env.LDAP_URI
         })
 
         return new Promise((resolve, reject) => {
@@ -32,7 +32,7 @@ export default NextAuth({
     })
   ],
   callbacks: {
-    async jwt({token, user}) {
+    async jwt ({ token, user }) {
       const isSignIn = !!user
       if (isSignIn) {
         token.username = user.username
@@ -40,9 +40,9 @@ export default NextAuth({
       }
       return token
     },
-    async session({ session, token}) {
-      return{ ...session, user: { username: token.username }}
-    },
+    async session ({ session, token }) {
+      return { ...session, user: { username: token.username } }
+    }
   },
   secret: process.env.NEXTAUTH_SECRET,
   jwt: {

@@ -1,11 +1,11 @@
-import React, {useState} from 'react'
-import {Button, Card, Form} from "react-bootstrap";
+import React, { useState } from 'react'
+import { Button, Card, Form } from 'react-bootstrap'
 
-import axios from "axios";
-import styles from "../../styles/Home.module.css";
+import axios from 'axios'
+import styles from '../../styles/Home.module.css'
 
-async function onAgendaAddSubmit(value) {
-  const data = {title: value}
+async function onAgendaAddSubmit (value) {
+  const data = { title: value }
   axios.post('/api/agenda/add', data)
     .then(() => {
       console.info('ADD_AGENDA', data)
@@ -15,7 +15,7 @@ async function onAgendaAddSubmit(value) {
     })
 }
 
-async function onAgendaClearSubmit() {
+async function onAgendaClearSubmit () {
   axios.post('/api/agenda/clear')
     .then(() => {
       console.info('CLEAR_AGENDA')
@@ -25,10 +25,10 @@ async function onAgendaClearSubmit() {
     })
 }
 
-async function onAgendaRemoveSubmit(tickedItems) {
+async function onAgendaRemoveSubmit (tickedItems) {
   tickedItems.map((item) => {
     if (item.isChecked) {
-      const data = {title: item.title}
+      const data = { title: item.title }
       axios.post('/api/agenda/remove', data)
         .then(() => {
           console.info('REMOVE_AGENDA', data)
@@ -37,11 +37,12 @@ async function onAgendaRemoveSubmit(tickedItems) {
           console.error(error)
         })
     }
+    return null
   })
 }
 
-function onAgendaSetCurrent(title) {
-  const data = {title: title}
+function onAgendaSetCurrent (title) {
+  const data = { title }
   axios.post('/api/agenda/setcurrent', data)
     .then(() => {
       console.info('SET_CURRENT_AGENDA', data)
@@ -51,8 +52,8 @@ function onAgendaSetCurrent(title) {
     })
 }
 
-function onAgendaDeactivateCurrent() {
-  axios.post('/api/agenda/deactivatecurrent', )
+function onAgendaDeactivateCurrent () {
+  axios.post('/api/agenda/deactivatecurrent')
     .then(() => {
       console.info('DEACTIVATE_CURRENT_AGENDA')
     })
@@ -61,13 +62,14 @@ function onAgendaDeactivateCurrent() {
     })
 }
 
-export default function AgendaCard({ pointsOfOrder }) {
+export default function AgendaCard ({ pointsOfOrder }) {
   const [agendaItem, setAgendaItem] = useState('')
-  let [tickedItems] = useState([])
+  const [tickedItems] = useState([])
 
   if (tickedItems.length === 0) {
     pointsOfOrder.map((item) => {
-      tickedItems.push({...item, isChecked: false})
+      tickedItems.push({ ...item, isChecked: false })
+      return null
     })
   }
 
@@ -77,11 +79,12 @@ export default function AgendaCard({ pointsOfOrder }) {
     }
 
     pointsOfOrder.map((item) => {
-      tickedItems.push({...item, isChecked: false})
+      tickedItems.push({ ...item, isChecked: false })
+      return null
     })
   }
 
-  function handleChange(e) {
+  function handleChange (e) {
     tickedItems.map((item) => {
       if (item.title === e.target.value) {
         item.isChecked = e.target.checked
@@ -94,17 +97,17 @@ export default function AgendaCard({ pointsOfOrder }) {
     <Card.Title>Agenda</Card.Title>
 
     <Card.Body>
-      <Form id={"pointsOfOrder"}>
+      <Form id={'pointsOfOrder'}>
         {pointsOfOrder.map((item, idx) => {
           return <div key={idx}>
-            <Form.Check type={"checkbox"}
+            <Form.Check type={'checkbox'}
                         id={item.title}
                         label={item.title}
                         value={item.title}
                         onChange={e => handleChange(e, pointsOfOrder)}
             />
-            {item.active < 1 && <Button variant={"link"} onClick={() => onAgendaSetCurrent(item.title)}>Activate</Button>}
-            {item.active > 0 && <Button variant={"link"} onClick={() => onAgendaDeactivateCurrent()}>Deactivate</Button>}
+            {item.active < 1 && <Button variant={'link'} onClick={() => onAgendaSetCurrent(item.title)}>Activate</Button>}
+            {item.active > 0 && <Button variant={'link'} onClick={() => onAgendaDeactivateCurrent()}>Deactivate</Button>}
           </div>
         })}
       </Form>
@@ -112,10 +115,10 @@ export default function AgendaCard({ pointsOfOrder }) {
 
     <Card.Footer>
       <fieldset>
-        <label htmlFor={"agendaitem"}>Agenda Item Input:</label><br/>
-        <input type={"text"}
-               id={"agendaitem"}
-               name={"agendaitem"}
+        <label htmlFor={'agendaitem'}>Agenda Item Input:</label><br/>
+        <input type={'text'}
+               id={'agendaitem'}
+               name={'agendaitem'}
                value={agendaItem}
                onChange={e => setAgendaItem(e.target.value)}
         /><br/>
@@ -123,18 +126,18 @@ export default function AgendaCard({ pointsOfOrder }) {
       <br/>
 
       <Button className={styles.button}
-              variant={"outline-success"}
+              variant={'outline-success'}
               onClick={() => {
                 onAgendaAddSubmit(agendaItem)
               }}>
         Add Agenda Item
       </Button>
 
-      <Button className={styles.button} variant={"outline-danger"} onClick={() => onAgendaRemoveSubmit(tickedItems)}>
+      <Button className={styles.button} variant={'outline-danger'} onClick={() => onAgendaRemoveSubmit(tickedItems)}>
         Remove Checked Agenda Item
       </Button>
 
-      <Button className={styles.button} variant={"danger"} onClick={() => {onAgendaClearSubmit()}}>
+      <Button className={styles.button} variant={'danger'} onClick={() => { onAgendaClearSubmit() }}>
         Clear Agenda
       </Button>
 

@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import {Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
+import { Container, Form, Navbar, Offcanvas } from 'react-bootstrap'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
-import Link from "next/link";
-import HistoryCard from "../components/voting/HistoryCard";
+import Link from 'next/link'
+import HistoryCard from '../components/voting/HistoryCard'
 
-export default function Admin() {
+export default function Admin () {
   /**
    * Managing of the Hamburger Menu
    */
@@ -26,9 +26,9 @@ export default function Admin() {
   const [refreshToken, setRefreshToken] = useState(Math.random())
   const [motionItems, setMotionsItems] = useState([])
   useEffect(() => {
-    async function load() {
-      const motionResponse = await fetch('/api/voting/retrieve');
-      const motionItems = await motionResponse.json();
+    async function load () {
+      const motionResponse = await fetch('/api/voting/retrieve')
+      const motionItems = await motionResponse.json()
       setMotionsItems(motionItems)
     }
     load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
@@ -88,7 +88,7 @@ export default function Admin() {
                   type="checkbox"
                   id="stay-logged-in"
                   label="Anwesend"
-                  /**onChange*/
+                  /** onChange */
                 />
               </li>
             </>

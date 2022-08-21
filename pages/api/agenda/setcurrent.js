@@ -1,4 +1,4 @@
-import executeQuery from "../../../lib/db";
+import executeQuery from '../../../lib/db'
 
 export default function handler (req, res) {
   return new Promise(async (resolve) => {

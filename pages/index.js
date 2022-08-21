@@ -1,14 +1,14 @@
-import React, {useState, useEffect} from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import {Button, ButtonGroup, Card, Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
+import { Button, ButtonGroup, Card, Container, Form, Navbar, Offcanvas } from 'react-bootstrap'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
-import Link from "next/link";
-import HistoryCard from "../components/voting/HistoryCard";
-import axios from "axios";
+import Link from 'next/link'
+import HistoryCard from '../components/voting/HistoryCard'
+import axios from 'axios'
 
-async function onYesSubmit() {
+async function onYesSubmit () {
   axios.post('/api/submitvote/yes')
     .then(() => {
       console.info('YES_VOTE')
@@ -18,7 +18,7 @@ async function onYesSubmit() {
     })
 }
 
-async function onNoSubmit() {
+async function onNoSubmit () {
   axios.post('/api/submitvote/no')
     .then(() => {
       console.info('NO_VOTE')
@@ -28,7 +28,7 @@ async function onNoSubmit() {
     })
 }
 
-async function onAbstSubmit() {
+async function onAbstSubmit () {
   axios.post('/api/submitvote/abst')
     .then(() => {
       console.info('ABST_VOTE')
@@ -38,7 +38,7 @@ async function onAbstSubmit() {
     })
 }
 
-export default function Home() {
+export default function Home () {
   /**
    * Managing of the Hamburger Menu
    */
@@ -59,24 +59,32 @@ export default function Home() {
   const [currentMotion, setCurrentAgendaItem] = useState([])
   const [agendaItems, setAgendaItems] = useState([])
   const [speakersItems, setSpeakersItems] = useState([])
+  const [isQuotation, setQuotation] = useState(false)
   useEffect(() => {
-    async function load() {
-      const motionResponse = await fetch('/api/voting/retrieve');
-      const motionItems = await motionResponse.json();
+    async function load () {
+      const motionResponse = await fetch('/api/voting/retrieve')
+      const motionItems = await motionResponse.json()
       setMotionsItems(motionItems)
 
       const currentMotionResponse = await fetch('/api/voting/retrievecurrent')
       const currentMotionItem = await currentMotionResponse.json()
       setCurrentAgendaItem(currentMotionItem)
 
-      const agendaResponse = await fetch('/api/agenda/retrievecurrent');
-      const agendaItems = await agendaResponse.json();
+      const agendaResponse = await fetch('/api/agenda/retrievecurrent')
+      const agendaItems = await agendaResponse.json()
       setAgendaItems(agendaItems)
 
-      const speakersResponse = await fetch('/api/speakers/retrieve');
-      const speakersItems = await speakersResponse.json();
+      const speakersResponse = await fetch('/api/speakers/retrieve')
+      const speakersItems = await speakersResponse.json()
       setSpeakersItems(speakersItems)
 
+      const quotationResponse = await fetch('/api/settings/retrievequotation')
+      const quotation = await quotationResponse.json()
+      if (quotation[0].bool !== 0) {
+        setQuotation(true)
+      } else {
+        setQuotation(false)
+      }
     }
 
     load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
@@ -137,7 +145,7 @@ export default function Home() {
                   type="checkbox"
                   id="stay-logged-in"
                   label="Anwesend"
-                  /**onChange*/
+                  /** onChange */
                 />
               </li>
             </>
@@ -166,14 +174,58 @@ export default function Home() {
         </Card>
 
         <Card className={styles.card}>
-          <Card.Title>Speakers' List</Card.Title>
-          <Card.Subtitle>Nicht quotiert</Card.Subtitle>
+          <Card.Title>Speakers&rsquo; List</Card.Title>
+          {!isQuotation && <Card.Subtitle>Not quoted</Card.Subtitle>}
+          {isQuotation && <Card.Subtitle>Quoted</Card.Subtitle>}
           <Card.Body>
-            <ol>
+            {!isQuotation && <ol>
               {speakersItems.map((item, idx) => {
-                return <li key={idx}>{item.name}</li>
-              })}
-            </ol>
+                return <li key={idx}>{item.name + ' | ' + item.gender}</li>
+              }
+              )}
+            </ol>}
+
+            {isQuotation && <>
+              <h6>Men</h6>
+              <ol>
+                {speakersItems.map((item, idx) => {
+                  if (item.gender === 'm') {
+                    return <li key={idx}>{item.name + ' | ' + item.gender}</li>
+                  }
+                  return null
+                })
+                }
+              </ol>
+            </>
+            }
+
+            {isQuotation && <>
+              <h6>Women</h6>
+              <ol>
+                {speakersItems.map((item, idx) => {
+                  if (item.gender === 'w') {
+                    return <li key={idx}>{item.name + ' | ' + item.gender}</li>
+                  }
+                  return null
+                })
+                }
+              </ol>
+            </>
+            }
+
+            {isQuotation && <>
+              <h6>Diverse</h6>
+              <ol>
+                {speakersItems.map((item, idx) => {
+                  if (item.gender === 'd') {
+                    return <li key={idx}>{item.name + ' | ' + item.gender}</li>
+                  }
+                  return null
+                })
+                }
+              </ol>
+            </>
+            }
           </Card.Body>
         </Card>
 

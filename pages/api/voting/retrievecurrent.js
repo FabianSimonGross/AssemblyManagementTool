@@ -1,10 +1,10 @@
-import executeQuery from "../../../lib/db";
+import executeQuery from '../../../lib/db'
 
 export default function handler (req, res) {
   return new Promise(async (resolve) => {
     await executeQuery({
       query: 'SELECT * FROM `motions` WHERE motions.active = 1;',
-      values: null,
+      values: null
     }).then(r => {
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')

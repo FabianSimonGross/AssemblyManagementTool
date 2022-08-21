@@ -1,10 +1,10 @@
-import executeQuery from "../../../lib/db";
+import executeQuery from '../../../lib/db'
 
 export default function handler (req, res) {
   return new Promise(async (resolve) => {
     await executeQuery({
       query: 'TRUNCATE motions',
-      values: [req.body.title, req.body.yes, req.body.no, req.body.abstention],
+      values: [req.body.title, req.body.yes, req.body.no, req.body.abstention]
     }).then(r => {
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')

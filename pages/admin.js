@@ -1,17 +1,17 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import {Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
+import { Container, Form, Navbar, Offcanvas } from 'react-bootstrap'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
-import Link from "next/link";
+import Link from 'next/link'
 
-import AgendaCard from "../components/admin/AgendaCard";
-import SpeakerCard from "../components/admin/SpeakerCard";
-import VotingAdminCard from "../components/admin/VotingAdminCard";
-import VotingHistoryAdminCard from "../components/admin/VotingHistoryAdminCard";
+import AgendaCard from '../components/admin/AgendaCard'
+import SpeakerCard from '../components/admin/SpeakerCard'
+import VotingAdminCard from '../components/admin/VotingAdminCard'
+import VotingHistoryAdminCard from '../components/admin/VotingHistoryAdminCard'
 
-export default function Admin() {
+export default function Admin () {
   /**
    * Managing of the Hamburger Menu
    */
@@ -30,25 +30,33 @@ export default function Admin() {
   const [refreshToken, setRefreshToken] = useState(Math.random())
   const [agendaItems, setAgendaItems] = useState([])
   const [speakersItems, setSpeakersItems] = useState([])
+  const [isQuotation, setQuotation] = useState(false)
   const [motionItems, setMotionsItems] = useState([])
   const [currentMotionItem, setCurrentMotionItem] = useState([])
   useEffect(() => {
-    async function load() {
-      const agendaResponse = await fetch('/api/agenda/retrieve');
-      const agendaItems = await agendaResponse.json();
+    async function load () {
+      const agendaResponse = await fetch('/api/agenda/retrieve')
+      const agendaItems = await agendaResponse.json()
       setAgendaItems(agendaItems)
 
-      const speakersResponse = await fetch('/api/speakers/retrieve');
-
-      const speakersItems = await speakersResponse.json();
+      const speakersResponse = await fetch('/api/speakers/retrieve')
+      const speakersItems = await speakersResponse.json()
       setSpeakersItems(speakersItems)
 
-      const motionResponse = await fetch('/api/voting/retrieve');
-      const motionItems = await motionResponse.json();
+      const quotationResponse = await fetch('/api/settings/retrievequotation')
+      const quotation = await quotationResponse.json()
+      if (quotation[0].bool !== 0) {
+        setQuotation(true)
+      } else {
+        setQuotation(false)
+      }
+
+      const motionResponse = await fetch('/api/voting/retrieve')
+      const motionItems = await motionResponse.json()
       setMotionsItems(motionItems)
 
       const currentMotionResponse = await fetch('/api/voting/retrievecurrent')
-      const currentMotionItem = await currentMotionResponse.json();
+      const currentMotionItem = await currentMotionResponse.json()
       setCurrentMotionItem(currentMotionItem)
     }
 
@@ -109,7 +117,7 @@ export default function Admin() {
                   type="checkbox"
                   id="stay-logged-in"
                   label="Anwesend"
-                  /**onChange*/
+                  /** onChange */
                 />
               </li>
             </>
@@ -120,7 +128,7 @@ export default function Admin() {
       <>
         <AgendaCard pointsOfOrder={agendaItems}/>
 
-        <SpeakerCard speakerItems={speakersItems}/>
+        <SpeakerCard speakerItems={speakersItems} isQuotation={isQuotation}/>
 
         <VotingAdminCard currentMotionItem={currentMotionItem}/>
 

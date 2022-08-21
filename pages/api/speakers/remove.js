@@ -1,10 +1,10 @@
-import executeQuery from "../../../lib/db";
+import executeQuery from '../../../lib/db'
 
-export default async function handler(req, res) {
+export default async function handler (req, res) {
   return new Promise(async (resolve) => {
     await executeQuery({
       query: 'DELETE FROM speakers WHERE name=(?)',
-      values: [req.body.name],
+      values: [req.body.name]
     }).then(r => {
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')

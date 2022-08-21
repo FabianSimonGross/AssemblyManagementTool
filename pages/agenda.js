@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import {Card, Container, Form, Navbar, Offcanvas} from 'react-bootstrap'
+import { Card, Container, Form, Navbar, Offcanvas } from 'react-bootstrap'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
-import Link from "next/link";
+import Link from 'next/link'
 
-export default function Agenda() {
+export default function Agenda () {
   const [isOpen, setOpen] = useState(false)
   const handleToggle = () => {
     if (isOpen) {
@@ -18,9 +18,9 @@ export default function Agenda() {
 
   const [agendaItems, setAgendaItems] = useState([])
   useEffect(() => {
-    async function load() {
-      const response = await fetch('/api/agenda/retrieve');
-      const agendaItems = await response.json();
+    async function load () {
+      const response = await fetch('/api/agenda/retrieve')
+      const agendaItems = await response.json()
       setAgendaItems(agendaItems)
     }
 
@@ -81,7 +81,7 @@ export default function Agenda() {
                   type="checkbox"
                   id="stay-logged-in"
                   label="Anwesend"
-                  /**onChange*/
+                  /** onChange */
                 />
               </li>
             </>
@@ -95,7 +95,7 @@ export default function Agenda() {
         </center>
 
         {agendaItems.map((item, idx) => {
-          return  <Card className={styles.card} key={idx}>
+          return <Card className={styles.card} key={idx}>
                     <Card.Title>{item.title}</Card.Title>
                     {item.active > 0 && <Card.Subtitle>Active</Card.Subtitle>}
                     <Card.Body>

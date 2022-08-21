@@ -1,36 +1,35 @@
-import styles from "../../styles/Home.module.css";
-import {Button, Card} from "react-bootstrap";
-import React, {useState} from "react";
-import HistoryCard from "../voting/HistoryCard";
-import axios from "axios";
+import styles from '../../styles/Home.module.css'
+import { Button, Card } from 'react-bootstrap'
+import React, { useState } from 'react'
+import HistoryCard from '../voting/HistoryCard'
+import axios from 'axios'
 
-function onAnalogeVotingSubmit(title,yes,no,abstention) {
+function onAnalogeVotingSubmit (title, yes, no, abstention) {
   const data = {
-    title: title,
-    yes: yes,
-    no: no,
-    abstention: abstention,
+    title,
+    yes,
+    no,
+    abstention
   }
 
   axios.post('/api/voting/addanalogue', data)
     .then(() => {
       console.info('ADD_ANALOGE', data)
     }).catch(error => {
-    console.error(error)
-  })
+      console.error(error)
+    })
 }
 
-function onVotingHistoryClearSubmit() {
+function onVotingHistoryClearSubmit () {
   axios.post('/api/voting/clear')
     .then(() => {
       console.info('CLEAR_VOTING_HISTORY')
     }).catch(error => {
       console.error(error)
-  })
+    })
 }
 
-
-export default function VotingHistoryAdminCard({ votingItems }) {
+export default function VotingHistoryAdminCard ({ votingItems }) {
   const [question, setQuestion] = useState('')
   const [yes, setYes] = useState(0)
   const [no, setNo] = useState(0)
@@ -45,46 +44,46 @@ export default function VotingHistoryAdminCard({ votingItems }) {
     </Card.Body>
     <Card.Footer>
       <form>
-        <label htmlFor={"analogquestion"}>Question:</label><br/>
-        <input type={"text"}
-               id={"analogquestion"}
-               name={"analogquestion"}
+        <label htmlFor={'analogquestion'}>Question:</label><br/>
+        <input type={'text'}
+               id={'analogquestion'}
+               name={'analogquestion'}
                value={question}
                onChange={e => setQuestion(e.target.value)}
         /><br/>
 
-        <label htmlFor={"yesresult"}>YES:</label><br/>
-        <input type={"number"}
-               id={"yesresult"}
-               name={"analogquestion"}
-               placeholder={"YES"}
+        <label htmlFor={'yesresult'}>YES:</label><br/>
+        <input type={'number'}
+               id={'yesresult'}
+               name={'analogquestion'}
+               placeholder={'YES'}
                value={yes}
                onChange={e => setYes(e.target.valueAsNumber)}
         /><br/>
 
-        <label htmlFor={"noresult"}>NO:</label><br/>
-        <input type={"number"}
-               id={"noresult"}
-               name={"analogquestion"}
-               placeholder={"NO"}
+        <label htmlFor={'noresult'}>NO:</label><br/>
+        <input type={'number'}
+               id={'noresult'}
+               name={'analogquestion'}
+               placeholder={'NO'}
                value={no}
                onChange={e => setNo(e.target.valueAsNumber)}
         /><br/>
 
-        <label htmlFor={"abstresult"}>ABSTENTION:</label><br/>
-        <input type={"number"}
-               id={"abstresult"}
-               name={"analogquestion"}
-               placeholder={"ABSTENTION"}
+        <label htmlFor={'abstresult'}>ABSTENTION:</label><br/>
+        <input type={'number'}
+               id={'abstresult'}
+               name={'analogquestion'}
+               placeholder={'ABSTENTION'}
                value={abs}
                onChange={e => setAbs(e.target.valueAsNumber)}
         /><br/>
       </form>
       <br/>
-      <Button className={styles.button} variant={"outline-success"} onClick={() => onAnalogeVotingSubmit(question,yes,no,abs)}>
+      <Button className={styles.button} variant={'outline-success'} onClick={() => onAnalogeVotingSubmit(question, yes, no, abs)}>
         Add Analog Voting
       </Button>
-      <Button className={styles.button} variant={"danger"} onClick={() => onVotingHistoryClearSubmit()}>
+      <Button className={styles.button} variant={'danger'} onClick={() => onVotingHistoryClearSubmit()}>
         Clear Voting History
       </Button>
     </Card.Footer>
