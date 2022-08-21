@@ -97,6 +97,7 @@ export default function Agenda() {
         {agendaItems.map((item, idx) => {
           return  <Card className={styles.card} key={idx}>
                     <Card.Title>{item.title}</Card.Title>
+                    {item.active > 0 && <Card.Subtitle>Active</Card.Subtitle>}
                     <Card.Body>
 
                     </Card.Body>

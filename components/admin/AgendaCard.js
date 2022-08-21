@@ -10,8 +10,8 @@ async function onAgendaAddSubmit(value) {
     .then(() => {
       console.info('ADD_AGENDA', data)
     })
-    .catch((e) => {
-      console.error(e)
+    .catch(error => {
+      console.error(error)
     })
 }
 
@@ -20,17 +20,75 @@ async function onAgendaClearSubmit() {
     .then(() => {
       console.info('CLEAR_AGENDA')
     })
-    .catch((e) => {
-      console.error(e)
+    .catch(error => {
+      console.error(error)
     })
 }
 
-async function onAgendaRemoveSubmit() {
+async function onAgendaRemoveSubmit(tickedItems) {
+  tickedItems.map((item) => {
+    if (item.isChecked) {
+      const data = {title: item.title}
+      axios.post('/api/agenda/remove', data)
+        .then(() => {
+          console.info('REMOVE_AGENDA', data)
+        })
+        .catch(error => {
+          console.error(error)
+        })
+    }
+  })
+}
 
+function onAgendaSetCurrent(title) {
+  const data = {title: title}
+  axios.post('/api/agenda/setcurrent', data)
+    .then(() => {
+      console.info('SET_CURRENT_AGENDA', data)
+    })
+    .catch(error => {
+      console.error(error)
+    })
+}
+
+function onAgendaDeactivateCurrent() {
+  axios.post('/api/agenda/deactivatecurrent', )
+    .then(() => {
+      console.info('DEACTIVATE_CURRENT_AGENDA')
+    })
+    .catch(error => {
+      console.error(error)
+    })
 }
 
 export default function AgendaCard({ pointsOfOrder }) {
   const [agendaItem, setAgendaItem] = useState('')
+  let [tickedItems] = useState([])
+
+  if (tickedItems.length === 0) {
+    pointsOfOrder.map((item) => {
+      tickedItems.push({...item, isChecked: false})
+    })
+  }
+
+  if (tickedItems.length !== pointsOfOrder.length) {
+    while (tickedItems.length > 0) {
+      tickedItems.pop()
+    }
+
+    pointsOfOrder.map((item) => {
+      tickedItems.push({...item, isChecked: false})
+    })
+  }
+
+  function handleChange(e) {
+    tickedItems.map((item) => {
+      if (item.title === e.target.value) {
+        item.isChecked = e.target.checked
+      }
+      return item
+    })
+  }
 
   return <Card className={styles.card} id={'agenda'}>
     <Card.Title>Agenda</Card.Title>
@@ -38,7 +96,16 @@ export default function AgendaCard({ pointsOfOrder }) {
     <Card.Body>
       <Form id={"pointsOfOrder"}>
         {pointsOfOrder.map((item, idx) => {
-          return <Form.Check type={"checkbox"} id={item.title} label={item.title} key={idx}/>
+          return <div key={idx}>
+            <Form.Check type={"checkbox"}
+                        id={item.title}
+                        label={item.title}
+                        value={item.title}
+                        onChange={e => handleChange(e, pointsOfOrder)}
+            />
+            {item.active < 1 && <Button variant={"link"} onClick={() => onAgendaSetCurrent(item.title)}>Activate</Button>}
+            {item.active > 0 && <Button variant={"link"} onClick={() => onAgendaDeactivateCurrent()}>Deactivate</Button>}
+          </div>
         })}
       </Form>
     </Card.Body>
@@ -46,7 +113,12 @@ export default function AgendaCard({ pointsOfOrder }) {
     <Card.Footer>
       <fieldset>
         <label htmlFor={"agendaitem"}>Agenda Item Input:</label><br/>
-        <input type={"text"} id={"agendaitem"} name={"agendaitem"} value={agendaItem} onChange={e => setAgendaItem(e.target.value)}/><br/>
+        <input type={"text"}
+               id={"agendaitem"}
+               name={"agendaitem"}
+               value={agendaItem}
+               onChange={e => setAgendaItem(e.target.value)}
+        /><br/>
       </fieldset>
       <br/>
 
@@ -58,16 +130,11 @@ export default function AgendaCard({ pointsOfOrder }) {
         Add Agenda Item
       </Button>
 
-      <Button className={styles.button} variant={"outline-danger"}>
-        Remove Agenda Items
+      <Button className={styles.button} variant={"outline-danger"} onClick={() => onAgendaRemoveSubmit(tickedItems)}>
+        Remove Checked Agenda Item
       </Button>
 
-      <Button className={styles.button}
-              variant={"danger"}
-              onClick={() => {
-                onAgendaClearSubmit()
-              }
-      }>
+      <Button className={styles.button} variant={"danger"} onClick={() => {onAgendaClearSubmit()}}>
         Clear Agenda
       </Button>
 

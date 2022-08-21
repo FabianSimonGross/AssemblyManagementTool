@@ -1,14 +1,19 @@
 import executeQuery from "../../../lib/db";
 
-export default async function handler(req, res) {
+export default function handler (req, res) {
   return new Promise(async (resolve) => {
     await executeQuery({
-      query: 'DELETE FROM speakers WHERE name=(?)',
-      values: [req.body.name],
+      query: 'UPDATE agendaitems SET agendaitems.active=0 WHERE agendaitems.active=1',
+      values: null
+    })
+
+    await executeQuery({
+      query: 'UPDATE agendaitems SET agendaitems.active=1 WHERE agendaitems.title=?',
+      values: [req.body.title]
     }).then(r => {
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
-      res.setHeader('Cache-Control', 'max-age=5')
+      res.setHeader('Cache-Control', 'max-age=1')
       res.end(JSON.stringify(r))
       resolve()
     }).catch(error => {

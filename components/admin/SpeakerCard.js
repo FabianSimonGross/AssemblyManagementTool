@@ -18,8 +18,19 @@ async function onSpeakerAddSubmit(speakerName, gender) {
   })
 }
 
-async function onSpeakerRemoveSubmit() {
-
+async function onSpeakerRemoveSubmit(tickedItems) {
+  tickedItems.map((item) => {
+    if(item.isChecked) {
+      const data = {name: item.name}
+      axios.post('/api/speakers/remove', data)
+        .then(() => {
+          console.info('REMOVE_SPEAKER', data)
+        })
+        .catch(error => {
+          console.error(error)
+        })
+    }
+  })
 }
 
 async function onSpeakerClearSubmit() {
@@ -40,7 +51,32 @@ async function onSpeakerActivateQuotationSubmit() {
 export default function SpeakerCard ( { speakerItems } ) {
   const [speakerItem, setSpeakerItem] = useState('')
   const [gender, setGender] = useState('')
+  let [tickedItems] = useState([])
 
+  if (tickedItems.length === 0) {
+    speakerItems.map((item) => {
+      tickedItems.push({...item, isChecked: false})
+    })
+  }
+
+  if (tickedItems.length !== speakerItems.length) {
+    while (tickedItems.length > 0) {
+      tickedItems.pop()
+    }
+
+    speakerItems.map((item) => {
+      tickedItems.push({...item, isChecked: false})
+    })
+  }
+
+  function handleChange(e) {
+    tickedItems.map((item) => {
+      if (item.name === e.target.value) {
+        item.isChecked = e.target.checked
+      }
+      return item
+    })
+  }
 
   return <Card className={styles.card} id={'speakers'}>
     <Card.Title>Speakers' List</Card.Title>
@@ -49,7 +85,12 @@ export default function SpeakerCard ( { speakerItems } ) {
       <ol>
         {speakerItems.map((item, idx) => {
           return <li key={idx}>
-            <Form.Check type={'checkbox'} id={'idx'} label={item.name + ' | ' + item.gender} />
+            <Form.Check type={'checkbox'}
+                        id={'idx'}
+                        label={item.name + ' | ' + item.gender}
+                        value={item.name}
+                        onChange={e => handleChange(e)}
+            />
           </li>
         })}
       </ol>
@@ -83,8 +124,8 @@ export default function SpeakerCard ( { speakerItems } ) {
         Activate quotation
       </Button>
 
-      <Button className={styles.button} variant={"outline-danger"}>
-        Remove Speakers
+      <Button className={styles.button} variant={"outline-danger"} onClick={() => onSpeakerRemoveSubmit(tickedItems)}>
+        Remove Checked Speaker
       </Button>
 
       <Button className={styles.button}
