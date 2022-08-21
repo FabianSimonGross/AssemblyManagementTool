@@ -25,6 +25,7 @@ export default function Home() {
    */
   const [refreshToken, setRefreshToken] = useState(Math.random())
   const [motionItems, setMotionsItems] = useState([])
+  const [currentMotion, setCurrentAgendaItem] = useState([])
   const [agendaItems, setAgendaItems] = useState([])
   const [speakersItems, setSpeakersItems] = useState([])
   useEffect(() => {
@@ -32,6 +33,10 @@ export default function Home() {
       const motionResponse = await fetch('/api/voting/retrieve');
       const motionItems = await motionResponse.json();
       setMotionsItems(motionItems)
+
+      const currentMotionResponse = await fetch('/api/voting/retrievecurrent')
+      const currentMotionItem = await currentMotionResponse.json()
+      setCurrentAgendaItem(currentMotionItem)
 
       const agendaResponse = await fetch('/api/agenda/retrievecurrent');
       const agendaItems = await agendaResponse.json();
@@ -143,7 +148,11 @@ export default function Home() {
 
         <Card className={styles.card}>
           <Card.Title>Current Voting</Card.Title>
-          <Card.Subtitle>Is there a current question?</Card.Subtitle>
+          {currentMotion.length > 0 && currentMotion.map((item, idx) => {
+            return <Card.Subtitle key={idx}>{item.title}</Card.Subtitle>
+          })}
+
+          {currentMotion.length < 1 && <Card.Subtitle>No Active Question</Card.Subtitle>}
           <Card.Body>
             <ButtonGroup variant="contained" aria-label="outlined primary button group">
               <Button>YES</Button>

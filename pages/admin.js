@@ -31,6 +31,7 @@ export default function Admin() {
   const [agendaItems, setAgendaItems] = useState([])
   const [speakersItems, setSpeakersItems] = useState([])
   const [motionItems, setMotionsItems] = useState([])
+  const [currentMotionItem, setCurrentMotionItem] = useState([])
   useEffect(() => {
     async function load() {
       const agendaResponse = await fetch('/api/agenda/retrieve');
@@ -38,12 +39,17 @@ export default function Admin() {
       setAgendaItems(agendaItems)
 
       const speakersResponse = await fetch('/api/speakers/retrieve');
+
       const speakersItems = await speakersResponse.json();
       setSpeakersItems(speakersItems)
 
       const motionResponse = await fetch('/api/voting/retrieve');
       const motionItems = await motionResponse.json();
       setMotionsItems(motionItems)
+
+      const currentMotionResponse = await fetch('/api/voting/retrievecurrent')
+      const currentMotionItem = await currentMotionResponse.json();
+      setCurrentMotionItem(currentMotionItem)
     }
 
     load().then(setTimeout(() => setRefreshToken(Math.random()), 2500))
@@ -116,7 +122,7 @@ export default function Admin() {
 
         <SpeakerCard speakerItems={speakersItems}/>
 
-        <VotingAdminCard/>
+        <VotingAdminCard currentMotionItem={currentMotionItem}/>
 
         <VotingHistoryAdminCard votingItems={motionItems}/>
 

@@ -17,12 +17,34 @@ function onNewVotingSubmit(title) {
   })
 }
 
-export default function VotingAdminCard () {
+function onRestartVotingSubmit() {
+  axios.post('/api/voting/restart')
+    .then(() => {
+      console.info('RESTART_VOTING_OF_CURRENT')
+    }).catch(error => {
+    console.error(error)
+  })
+}
+
+function onStopVotingSubmit() {
+  axios.post('/api/voting/stopactive')
+    .then(() => {
+      console.info('STOP_VOTING_OF_CURRENT')
+    }).catch(error => {
+    console.error(error)
+  })
+}
+
+export default function VotingAdminCard ({ currentMotionItem }) {
   const [questionItem, setQuestionItem] = useState('')
 
   return <Card className={styles.card} id={'voting'}>
     <Card.Title>Voting Administration</Card.Title>
-    <Card.Subtitle>Current Question in Green</Card.Subtitle>
+    {currentMotionItem.length > 0 && currentMotionItem.map((item, idx) => {
+      return <Card.Subtitle key={idx}>{item.title}</Card.Subtitle>
+    })}
+
+    {currentMotionItem.length < 1 && <Card.Subtitle>No Active Question</Card.Subtitle>}
     <Card.Body>
       <fieldset>
         <label htmlFor={"question"}>The Question:</label><br/>
@@ -33,10 +55,10 @@ export default function VotingAdminCard () {
       <Button className={styles.button} variant={"outline-success"} onClick={() => onNewVotingSubmit(questionItem)}>
         Start new Vote
       </Button>
-      <Button className={styles.button} variant={"outline-warning"}>
+      <Button className={styles.button} variant={"outline-warning"} onClick={() => onRestartVotingSubmit()}>
         Restart Voting
       </Button>
-      <Button className={styles.button} variant={"danger"}>
+      <Button className={styles.button} variant={"danger"} onClick={() => onStopVotingSubmit()}>
         Stop Voting
       </Button>
     </Card.Footer>

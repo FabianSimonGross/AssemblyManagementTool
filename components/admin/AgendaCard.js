@@ -13,7 +13,6 @@ async function onAgendaAddSubmit(value) {
     .catch((e) => {
       console.error(e)
     })
-
 }
 
 async function onAgendaClearSubmit() {
