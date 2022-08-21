@@ -6,6 +6,37 @@ import styles from '../styles/Home.module.css'
 import Hamburger from 'hamburger-react'
 import Link from "next/link";
 import HistoryCard from "../components/voting/HistoryCard";
+import axios from "axios";
+
+async function onYesSubmit() {
+  axios.post('/api/submitvote/yes')
+    .then(() => {
+      console.info('YES_VOTE')
+    })
+    .catch((e) => {
+      console.error(e)
+    })
+}
+
+async function onNoSubmit() {
+  axios.post('/api/submitvote/no')
+    .then(() => {
+      console.info('NO_VOTE')
+    })
+    .catch((e) => {
+      console.error(e)
+    })
+}
+
+async function onAbstSubmit() {
+  axios.post('/api/submitvote/abst')
+    .then(() => {
+      console.info('ABST_VOTE')
+    })
+    .catch((e) => {
+      console.error(e)
+    })
+}
 
 export default function Home() {
   /**
@@ -154,11 +185,13 @@ export default function Home() {
 
           {currentMotion.length < 1 && <Card.Subtitle>No Active Question</Card.Subtitle>}
           <Card.Body>
-            <ButtonGroup variant="contained" aria-label="outlined primary button group">
-              <Button>YES</Button>
-              <Button>NO</Button>
-              <Button>ABSTENTION</Button>
-            </ButtonGroup>
+            {currentMotion.length > 0 &&
+              <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                <Button onClick={() => onYesSubmit()}>YES</Button>
+                <Button onClick={() => onNoSubmit()}>NO</Button>
+                <Button onClick={() => onAbstSubmit()}>ABSTENTION</Button>
+              </ButtonGroup>
+            }
           </Card.Body>
         </Card>
 

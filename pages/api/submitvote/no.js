@@ -3,8 +3,8 @@ import executeQuery from "../../../lib/db";
 export default function handler (req, res) {
   return new Promise(async (resolve) => {
     await executeQuery({
-      query: 'INSERT INTO motions(title,active,yes,no,abstention) VALUES(?,?,?,?,?)',
-      values: [req.body.title,req.body.active,0,0,0],
+      query: 'UPDATE motions SET motions.no = motions.no + 1 WHERE motions.active=1',
+      values: null,
     }).then(r => {
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')

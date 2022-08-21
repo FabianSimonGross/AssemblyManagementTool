@@ -3,7 +3,7 @@ import executeQuery from "../../../lib/db";
 export default async function handler (req, res) {
   return new Promise(async (resolve) => {
     await executeQuery({
-      query: 'SELECT * FROM `motions` ORDER BY `motions`.`active` DESC',
+      query: 'SELECT * FROM `motions` ORDER BY `motions`.`date` DESC',
       values: null
     }).then(r => {
       res.statusCode = 200
