@@ -37,13 +37,5 @@ export default async function handler(req, res) {
         res.end()
       }
     )
-
-    await excuteQuery({
-      query: "INSERT INTO settings(setting, bool) VALUES(?,?)",
-      values: ['quotation', 0]
-    }).then(() => {
-      res.statusCode = 200
-      res.end()
-    })
   })
 }
