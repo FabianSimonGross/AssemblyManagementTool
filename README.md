@@ -1,7 +1,6 @@
 ## AssemblyVoting
 
-Simple OpenSource Variant of an Assembly Voting and Agenda System using Next.js, MySQL and LDAP so smaller Assemblys are able to coordinate a Assembly easily.
-
+Free and open source variant of an Assembly Voting and Agenda System.
 
 ## Deploy with docker-compose and traefik
 
