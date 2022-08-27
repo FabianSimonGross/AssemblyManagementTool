@@ -1,4 +1,4 @@
-import { getSession } from 'next-auth/react'
+import { signIn, signOut } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { Container, Navbar, Offcanvas } from 'react-bootstrap'
@@ -12,13 +12,9 @@ import SpeakerCard from '../components/admin/SpeakerCard'
 import VotingAdminCard from '../components/admin/VotingAdminCard'
 import VotingHistoryAdminCard from '../components/admin/VotingHistoryAdminCard'
 
-export async function getServerSideProps ({ req }) {
-  const session = await getSession({ req })
+export default function Admin () {
+  const session = true
 
-  return { props: { session } }
-}
-
-export default function Admin ({ session }) {
   /**
    * Managing of the Hamburger Menu
    */
@@ -123,14 +119,24 @@ export default function Admin ({ session }) {
               {!session &&
                 <li>
                   <Link href="/api/auth/signin">
-                    <h4>Sign In</h4>
+                    <a onClick={event => {
+                      event.preventDefault()
+                      signIn()
+                    }}>
+                      <h4>Sign In</h4>
+                    </a>
                   </Link>
                 </li>}
 
               {session &&
                 <li>
                   <Link href="/api/auth/signout">
-                    <h4>Sign Out</h4>
+                    <a onClick={event => {
+                      event.preventDefault()
+                      signOut()
+                    }}>
+                      <h4>Sign Out</h4>
+                    </a>
                   </Link>
                 </li>}
             </>

@@ -1,19 +1,18 @@
 import { Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import { getSession } from 'next-auth/react'
+import { signIn, signOut } from 'next-auth/react'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
 import Link from 'next/link'
 
-export async function getServerSideProps ({ req }) {
-  const session = await getSession({ req })
+export default function Agenda () {
+  const session = true
 
-  return { props: { session } }
-}
-
-export default function Agenda ({ session }) {
+  /**
+   * Managing of the Hamburger Menu
+   */
   const [isOpen, setOpen] = useState(false)
   const handleToggle = () => {
     if (isOpen) {
@@ -23,6 +22,9 @@ export default function Agenda ({ session }) {
     }
   }
 
+  /**
+   * Retrieving Data for the Cards
+   */
   const [agendaItems, setAgendaItems] = useState([])
   useEffect(() => {
     async function load () {
@@ -87,14 +89,24 @@ export default function Agenda ({ session }) {
               {!session &&
                 <li>
                   <Link href="/api/auth/signin">
-                    <h4>Sign In</h4>
+                    <a onClick={event => {
+                      event.preventDefault()
+                      signIn()
+                    }}>
+                      <h4>Sign In</h4>
+                    </a>
                   </Link>
                 </li>}
 
               {session &&
                 <li>
                   <Link href="/api/auth/signout">
-                    <h4>Sign Out</h4>
+                    <a onClick={event => {
+                      event.preventDefault()
+                      signOut()
+                    }}>
+                      <h4>Sign Out</h4>
+                    </a>
                   </Link>
                 </li>}
             </>

@@ -1,16 +1,16 @@
-import CredentialsProvider from 'next-auth/providers/credentials'
 import NextAuth from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
 const ldap = require('ldapjs')
 
-export default NextAuth({
+const options = {
   providers: [
-    CredentialsProvider({
+    Credentials({
       name: 'LDAP',
       credentials: {
         username: { label: 'DN', type: 'text', placeholder: '' },
         password: { label: 'Password', type: 'password' }
       },
-      async authorize (credentials, req) {
+      authorize: async (credentials) => {
         // You might want to pull this call out so we're not making a new LDAP client on every login attemp
         const client = ldap.createClient({
           url: process.env.LDAP_URI
@@ -21,7 +21,6 @@ export default NextAuth({
           client.bind(credentials.username, credentials.password, (error) => {
             if (error) {
               console.error('Failed')
-              console.error(error)
               reject(error)
             } else {
               console.log('Logged in')
@@ -36,7 +35,7 @@ export default NextAuth({
     })
   ],
   callbacks: {
-    async jwt ({ token, user }) {
+    jwt: async (token, user, account, profile, isNewUser) => {
       const isSignIn = !!user
       if (isSignIn) {
         token.username = user.username
@@ -44,12 +43,15 @@ export default NextAuth({
       }
       return token
     },
-    async session ({ session, token }) {
-      return { ...session, user: { username: token.username } }
+    session: async (session, user) => {
+      return { ...session, user: { username: user.username } }
     }
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXT_AUTH_SECRET,
   jwt: {
-    secret: process.env.JWT_SECRET
+    secret: process.env.NEXT_AUTH_SECRET,
+    encryption: true
   }
-})
+}
+
+export default (req, res) => NextAuth(req, res, options)

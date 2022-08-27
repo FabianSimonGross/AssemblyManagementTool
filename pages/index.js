@@ -1,4 +1,4 @@
-import { getSession } from 'next-auth/react'
+import { signIn, signOut } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { Button, ButtonGroup, Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
@@ -39,13 +39,9 @@ async function onAbstSubmit () {
     })
 }
 
-export async function getServerSideProps ({ req }) {
-  const session = await getSession({ req })
+export default function Home () {
+  const session = true
 
-  return { props: { session } }
-}
-
-export default function Home ({ session }) {
   /**
    * Managing of the Hamburger Menu
    */
@@ -96,6 +92,8 @@ export default function Home ({ session }) {
 
     load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
   }, [refreshToken])
+
+  console.log(session)
 
   return (
     <>
@@ -150,14 +148,24 @@ export default function Home ({ session }) {
               {!session &&
               <li>
                 <Link href="/api/auth/signin">
-                  <h4>Sign In</h4>
+                  <a onClick={event => {
+                    event.preventDefault()
+                    signIn()
+                  }}>
+                    <h4>Sign In</h4>
+                  </a>
                 </Link>
               </li>}
 
               {session &&
               <li>
                 <Link href="/api/auth/signout">
-                  <h4>Sign Out</h4>
+                  <a onClick={event => {
+                    event.preventDefault()
+                    signOut()
+                  }}>
+                    <h4>Sign Out</h4>
+                  </a>
                 </Link>
               </li>}
             </>
