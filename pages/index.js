@@ -1,6 +1,7 @@
+import { getSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import { Button, ButtonGroup, Card, Container, Form, Navbar, Offcanvas } from 'react-bootstrap'
+import { Button, ButtonGroup, Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
@@ -38,7 +39,13 @@ async function onAbstSubmit () {
     })
 }
 
-export default function Home () {
+export async function getServerSideProps ({ req }) {
+  const session = await getSession({ req })
+
+  return { props: { session } }
+}
+
+export default function Home ({ session }) {
   /**
    * Managing of the Hamburger Menu
    */
@@ -140,19 +147,25 @@ export default function Home () {
                 </Link>
               </li>
 
+              {!session &&
               <li>
-                <Form.Check
-                  type="checkbox"
-                  id="stay-logged-in"
-                  label="Anwesend"
-                  /** onChange */
-                />
-              </li>
+                <Link href="/api/auth/signin">
+                  <h4>Sign In</h4>
+                </Link>
+              </li>}
+
+              {session &&
+              <li>
+                <Link href="/api/auth/signout">
+                  <h4>Sign Out</h4>
+                </Link>
+              </li>}
             </>
           </Offcanvas.Body>
         </Offcanvas>
       </Navbar>
 
+      {session &&
       <>
         <Card className={styles.card}>
           {agendaItems.map((item, idx) => {
@@ -255,7 +268,7 @@ export default function Home () {
             })}
           </Card.Body>
         </Card>
-      </>
+      </>}
 
     </>
   )

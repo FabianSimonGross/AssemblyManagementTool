@@ -1,6 +1,7 @@
+import { getSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import { Container, Form, Navbar, Offcanvas } from 'react-bootstrap'
+import { Container, Navbar, Offcanvas } from 'react-bootstrap'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
@@ -11,7 +12,13 @@ import SpeakerCard from '../components/admin/SpeakerCard'
 import VotingAdminCard from '../components/admin/VotingAdminCard'
 import VotingHistoryAdminCard from '../components/admin/VotingHistoryAdminCard'
 
-export default function Admin () {
+export async function getServerSideProps ({ req }) {
+  const session = await getSession({ req })
+
+  return { props: { session } }
+}
+
+export default function Admin ({ session }) {
   /**
    * Managing of the Hamburger Menu
    */
@@ -112,19 +119,26 @@ export default function Admin () {
                   <h4>Administration</h4>
                 </Link>
               </li>
-              <li>
-                <Form.Check
-                  type="checkbox"
-                  id="stay-logged-in"
-                  label="Anwesend"
-                  /** onChange */
-                />
-              </li>
+
+              {!session &&
+                <li>
+                  <Link href="/api/auth/signin">
+                    <h4>Sign In</h4>
+                  </Link>
+                </li>}
+
+              {session &&
+                <li>
+                  <Link href="/api/auth/signout">
+                    <h4>Sign Out</h4>
+                  </Link>
+                </li>}
             </>
           </Offcanvas.Body>
         </Offcanvas>
       </Navbar>
 
+      {session &&
       <>
         <AgendaCard pointsOfOrder={agendaItems}/>
 
@@ -134,7 +148,7 @@ export default function Admin () {
 
         <VotingHistoryAdminCard votingItems={motionItems}/>
 
-      </>
+      </>}
     </>
   )
 }

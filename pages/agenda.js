@@ -1,12 +1,19 @@
+import { Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import { Card, Container, Form, Navbar, Offcanvas } from 'react-bootstrap'
+import { getSession } from 'next-auth/react'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
 import Link from 'next/link'
 
-export default function Agenda () {
+export async function getServerSideProps ({ req }) {
+  const session = await getSession({ req })
+
+  return { props: { session } }
+}
+
+export default function Agenda ({ session }) {
   const [isOpen, setOpen] = useState(false)
   const handleToggle = () => {
     if (isOpen) {
@@ -76,19 +83,26 @@ export default function Agenda () {
                   <h4>Administration</h4>
                 </Link>
               </li>
-              <li>
-                <Form.Check
-                  type="checkbox"
-                  id="stay-logged-in"
-                  label="Anwesend"
-                  /** onChange */
-                />
-              </li>
+
+              {!session &&
+                <li>
+                  <Link href="/api/auth/signin">
+                    <h4>Sign In</h4>
+                  </Link>
+                </li>}
+
+              {session &&
+                <li>
+                  <Link href="/api/auth/signout">
+                    <h4>Sign Out</h4>
+                  </Link>
+                </li>}
             </>
           </Offcanvas.Body>
         </Offcanvas>
       </Navbar>
 
+      {session &&
       <>
         <center>
           <h3 className={styles.title}>Agenda</h3>
@@ -103,7 +117,7 @@ export default function Agenda () {
                     </Card.Body>
                   </Card>
         })}
-      </>
+      </>}
     </>
   )
 }
