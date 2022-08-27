@@ -7,7 +7,7 @@ export default NextAuth({
     CredentialsProvider({
       name: 'LDAP',
       credentials: {
-        username: { label: 'DN', type: 'text', placeholder: '' },
+        username: { label: 'Name', type: 'text', placeholder: '' },
         password: { label: 'Password', type: 'password' }
       },
       async authorize (credentials, req) {
