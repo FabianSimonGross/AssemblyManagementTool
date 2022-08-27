@@ -1,7 +1,7 @@
 import executeQuery from '../../../lib/db'
 
 export default async function handler (req, res) {
-  return new Promise(async (resolve) => {
+  try {
     await executeQuery({
       query: 'TRUNCATE speakers',
       values: [req.body.title]
@@ -10,11 +10,9 @@ export default async function handler (req, res) {
       res.setHeader('Content-Type', 'application/json')
       res.setHeader('Cache-Control', 'max-age=5')
       res.end(JSON.stringify(r))
-      resolve()
-    }).catch(error => {
-      res.json(error)
-      res.statusCode(405).end()
-      resolve()
     })
-  })
+  } catch (error) {
+    res.json(error)
+    res.statusCode(405).end()
+  }
 }

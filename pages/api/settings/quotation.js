@@ -1,9 +1,9 @@
 import executeQuery from '../../../lib/db'
 
-export default function handler (req, res) {
+export default async function handler (req, res) {
   let result
 
-  return new Promise(async (resolve) => {
+  try {
     await executeQuery({
       query: 'SELECT * FROM `settings` WHERE `settings`.`setting`="quotation"',
       values: null
@@ -22,5 +22,6 @@ export default function handler (req, res) {
         values: null
       })
     }
-  })
+  } catch (error) {
+  }
 }

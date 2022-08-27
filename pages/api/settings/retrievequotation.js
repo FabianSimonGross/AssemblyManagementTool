@@ -1,7 +1,7 @@
 import executeQuery from '../../../lib/db'
 
-export default function handler (req, res) {
-  return new Promise(async (resolve) => {
+export default async function handler (req, res) {
+  try {
     await executeQuery({
       query: 'SELECT * FROM `settings` WHERE `settings`.`setting`="quotation"',
       values: null
@@ -10,7 +10,7 @@ export default function handler (req, res) {
       res.setHeader('Content-Type', 'application/json')
       res.setHeader('Cache-Control', 'max-age=1')
       res.end(JSON.stringify(r))
-      resolve()
     })
-  })
+  } catch (error) {
+  }
 }
