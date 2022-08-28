@@ -1,7 +1,8 @@
-import styles from '../../styles/Home.module.css'
 import { Button, Card } from 'react-bootstrap'
 import React, { useState } from 'react'
+
 import axios from 'axios'
+import styles from '../../styles/Home.module.css'
 
 function onNewVotingSubmit (title) {
   const data = {

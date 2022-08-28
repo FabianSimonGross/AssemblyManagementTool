@@ -7,11 +7,6 @@
     margin: 10px 0;
 }
 
-.subtitle {
-    font-size: 14pt;
-    margin: 5px 0;
-}
-
 .navbar li {
     display: flex;
     justify-content: center;

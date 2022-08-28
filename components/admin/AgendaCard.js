@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
 import { Button, Card, Form } from 'react-bootstrap'
+import React, { useState } from 'react'
 
 import axios from 'axios'
 import styles from '../../styles/Home.module.css'
@@ -128,7 +128,7 @@ export default function AgendaCard ({ pointsOfOrder }) {
       <Button className={styles.button}
               variant={'outline-success'}
               onClick={() => {
-                onAgendaAddSubmit(agendaItem)
+                onAgendaAddSubmit(agendaItem).then()
               }}>
         Add Agenda Item
       </Button>
@@ -137,7 +137,7 @@ export default function AgendaCard ({ pointsOfOrder }) {
         Remove Checked Agenda Item
       </Button>
 
-      <Button className={styles.button} variant={'danger'} onClick={() => { onAgendaClearSubmit() }}>
+      <Button className={styles.button} variant={'danger'} onClick={() => { onAgendaClearSubmit().then() }}>
         Clear Agenda
       </Button>
 

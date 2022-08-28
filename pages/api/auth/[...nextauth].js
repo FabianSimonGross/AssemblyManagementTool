@@ -1,5 +1,5 @@
-import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
+import NextAuth from 'next-auth'
 const ldap = require('ldapjs')
 
 const options = {
@@ -35,7 +35,7 @@ const options = {
     })
   ],
   callbacks: {
-    jwt: async (token, user, account, profile, isNewUser) => {
+    jwt: async (token, user) => {
       const isSignIn = !!user
       if (isSignIn) {
         token.username = user.username

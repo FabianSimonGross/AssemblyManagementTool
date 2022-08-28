@@ -1,8 +1,9 @@
-import styles from '../../styles/Home.module.css'
 import { Button, Card } from 'react-bootstrap'
 import React, { useState } from 'react'
+
 import HistoryCard from '../voting/HistoryCard'
 import axios from 'axios'
+import styles from '../../styles/Home.module.css'
 
 function onAnalogeVotingSubmit (title, yes, no, abstention) {
   const data = {

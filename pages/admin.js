@@ -1,7 +1,8 @@
-import { signIn, signOut } from 'next-auth/react'
-import React, { useEffect, useState } from 'react'
-import Head from 'next/head'
 import { Container, Navbar, Offcanvas } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import { signIn, signOut } from 'next-auth/react'
+import Head from 'next/head'
+import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
@@ -78,7 +79,7 @@ export default function Admin () {
         <Container>
           <Link href="../">
             <Navbar.Brand>
-              <img
+              <Image
                 src="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"
                 alt="Studierendenvertretung TH Ingolstadt"
                 className={`d-inline-block align-top ${styles.logo}`}
@@ -121,7 +122,7 @@ export default function Admin () {
                   <Link href="/api/auth/signin">
                     <a onClick={event => {
                       event.preventDefault()
-                      signIn()
+                      signIn().then()
                     }}>
                       <h4>Sign In</h4>
                     </a>
@@ -133,7 +134,7 @@ export default function Admin () {
                   <Link href="/api/auth/signout">
                     <a onClick={event => {
                       event.preventDefault()
-                      signOut()
+                      signOut().then()
                     }}>
                       <h4>Sign Out</h4>
                     </a>

@@ -1,8 +1,7 @@
 import executeQuery from '../../../lib/db'
 
-export default async function handler (req, res) {
+export default async function handler () {
   let result
-
   try {
     await executeQuery({
       query: 'SELECT * FROM `settings` WHERE `settings`.`setting`="quotation"',

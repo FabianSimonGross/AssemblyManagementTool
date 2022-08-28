@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
-import styles from '../../styles/Home.module.css'
 import { Button, Card, Form } from 'react-bootstrap'
+import React, { useState } from 'react'
+
 import axios from 'axios'
+import styles from '../../styles/Home.module.css'
 
 async function onSpeakerAddSubmit (speakerName, gender) {
   const data = {
@@ -186,7 +187,7 @@ export default function SpeakerCard ({ speakerItems, isQuotation }) {
       <Button className={styles.button}
               variant={'outline-success'}
               onClick={() => {
-                onSpeakerAddSubmit(speakerItem, gender)
+                onSpeakerAddSubmit(speakerItem, gender).then()
               }
               }>
         Add Speaker
@@ -203,7 +204,7 @@ export default function SpeakerCard ({ speakerItems, isQuotation }) {
       <Button className={styles.button}
               variant={'danger'}
               onClick={() => {
-                onSpeakerClearSubmit()
+                onSpeakerClearSubmit().then()
               }
       }>
         Clear Speakers&rsquo; List

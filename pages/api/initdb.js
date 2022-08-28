@@ -2,7 +2,7 @@
 import excuteQuery from '../../lib/db'
 
 export default async function handler (req, res) {
-  return new Promise(async () => {
+  try {
     await excuteQuery({
       query: 'CREATE TABLE IF NOT EXISTS `voting`.`motions` ( `id` INT NOT NULL AUTO_INCREMENT, `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `yes` INT , `no` INT , `abstention` INT , `active` TINYINT(1), `title` TEXT NOT NULL, PRIMARY KEY (id))',
       values: null
@@ -25,8 +25,7 @@ export default async function handler (req, res) {
     }).then(() => {
       res.statusCode = 200
       res.end()
-    }
-    )
+    })
 
     await excuteQuery({
       query: 'CREATE TABLE IF NOT EXISTS `voting`.`settings` (`setting` TEXT NOT NULL, `bool` TINYINT(1))',
@@ -34,7 +33,7 @@ export default async function handler (req, res) {
     }).then(() => {
       res.statusCode = 200
       res.end()
-    }
-    )
-  })
+    })
+  } catch (error) {
+  }
 }
