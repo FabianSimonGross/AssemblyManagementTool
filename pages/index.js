@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
 import React, { useEffect, useState } from 'react'
-import { signIn, signOut } from 'next-auth/react'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 
@@ -40,7 +40,15 @@ async function onAbstSubmit () {
 }
 
 export default function Home () {
-  const session = true
+  /**
+   * Managing Sessions
+   */
+  const { data: session, status } = useSession()
+  useEffect(() => {
+    if (session?.error === 'RefreshAccessTokenError') {
+      signIn() // Force sign in to hopefully resolve error
+    }
+  }, [session])
 
   /**
    * Managing of the Hamburger Menu
@@ -93,7 +101,13 @@ export default function Home () {
     load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
   }, [refreshToken])
 
-  console.log(session)
+  if (status === 'loading') {
+    return <p>Loading...</p>
+  }
+
+  if (status === 'unauthenticated') {
+    return <p>Access Denied</p>
+  }
 
   return (
     <>

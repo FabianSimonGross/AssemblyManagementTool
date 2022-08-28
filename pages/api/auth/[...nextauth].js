@@ -36,6 +36,7 @@ const options = {
   ],
   callbacks: {
     jwt: async (token, user) => {
+      console.log(user)
       const isSignIn = !!user
       if (isSignIn) {
         token.username = user.username
@@ -44,12 +45,17 @@ const options = {
       return token
     },
     session: async (session, user) => {
-      return { ...session, user: { username: user.username } }
+      console.log(user)
+      return {
+        ...session,
+        user: { username: user.username }
+      }
     }
   },
   secret: process.env.NEXT_AUTH_SECRET,
   jwt: {
     secret: process.env.NEXT_AUTH_SECRET,
+    maxAge: 3600,
     encryption: true
   }
 }
