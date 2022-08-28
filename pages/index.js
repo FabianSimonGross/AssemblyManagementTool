@@ -2,7 +2,6 @@ import { Button, ButtonGroup, Card, Container, Navbar, Offcanvas } from 'react-b
 import React, { useEffect, useState } from 'react'
 import { signIn, signOut } from 'next-auth/react'
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
@@ -108,7 +107,7 @@ export default function Home () {
         <Container>
           <Link href="../">
             <Navbar.Brand>
-              <Image
+              <img
                 src="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"
                 alt="Studierendenvertretung TH Ingolstadt"
                 className={`d-inline-block align-top ${styles.logo}`}

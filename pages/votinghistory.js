@@ -5,7 +5,6 @@ import { signIn, signOut } from 'next-auth/react'
 import Hamburger from 'hamburger-react'
 import Head from 'next/head'
 import HistoryCard from '../components/voting/HistoryCard'
-import Image from 'next/image'
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 
@@ -50,7 +49,7 @@ export default function Admin () {
         <Container>
           <Link href="../">
             <Navbar.Brand>
-              <Image
+              <img
                 src="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"
                 alt="Studierendenvertretung TH Ingolstadt"
                 className={`d-inline-block align-top ${styles.logo}`}
