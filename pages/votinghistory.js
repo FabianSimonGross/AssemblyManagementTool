@@ -1,6 +1,6 @@
 import { Container, Navbar, Offcanvas } from 'react-bootstrap'
 import React, { useEffect, useState } from 'react'
-import { signIn, signOut } from 'next-auth/react'
+import { signIn, signOut, useSession } from 'next-auth/react'
 
 import Hamburger from 'hamburger-react'
 import Head from 'next/head'
@@ -9,7 +9,10 @@ import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 
 export default function Admin () {
-  const session = true
+  /**
+   * Managing Sessions
+   */
+  const { data: session, status } = useSession()
 
   /**
    * Managing of the Hamburger Menu
@@ -42,7 +45,7 @@ export default function Admin () {
       <Head>
         <title>Assembly Management Tool</title>
         <meta name="description" content="Digital Voting for Assemblys by Neuland Ingolstadt"/>
-        <link rel="icon" href="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"/>
+        <link rel="icon" href='https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg'/>
       </Head>
 
       <Navbar bg="light" variant="light">
@@ -50,8 +53,8 @@ export default function Admin () {
           <Link href="../">
             <Navbar.Brand>
               <img
-                src="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"
-                alt="Studierendenvertretung TH Ingolstadt"
+                src='https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg'
+                alt='Logo'
                 className={`d-inline-block align-top ${styles.logo}`}
               />{' '}
               Assembly Management Tool

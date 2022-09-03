@@ -44,11 +44,6 @@ export default function Home () {
    * Managing Sessions
    */
   const { data: session, status } = useSession()
-  useEffect(() => {
-    if (session?.error === 'RefreshAccessTokenError') {
-      signIn() // Force sign in to hopefully resolve error
-    }
-  }, [session])
 
   /**
    * Managing of the Hamburger Menu
@@ -101,20 +96,12 @@ export default function Home () {
     load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
   }, [refreshToken])
 
-  if (status === 'loading') {
-    return <p>Loading...</p>
-  }
-
-  if (status === 'unauthenticated') {
-    return <p>Access Denied</p>
-  }
-
   return (
     <>
       <Head>
         <title>Assembly Management Tool</title>
-        <meta name="description" content="Digital Voting for Assemblys by Neuland Ingolstadt"/>
-        <link rel="icon" href="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"/>
+        <meta name="description" content="Digital Assembly Management by Neuland Ingolstadt"/>
+        <link rel="icon" href='https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg'/>
       </Head>
 
       <Navbar bg="light" variant="light">
@@ -122,8 +109,8 @@ export default function Home () {
           <Link href="../">
             <Navbar.Brand>
               <img
-                src="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"
-                alt="Studierendenvertretung TH Ingolstadt"
+                src='https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg'
+                alt='Logo'
                 className={`d-inline-block align-top ${styles.logo}`}
               />{' '}
               Assembly Management Tool
