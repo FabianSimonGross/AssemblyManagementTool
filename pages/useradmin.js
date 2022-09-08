@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
-import React, { useEffect, useState } from 'react'
-import { signIn, signOut, useSession } from 'next-auth/react'
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
+import { signIn, signOut, useSession } from 'next-auth/react'
+import Head from 'next/head'
 import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import { Container, Navbar, Offcanvas, Table } from 'react-bootstrap'
+import styles from '../styles/Home.module.css'
 
 function addVoter () {
   axios.post('../../api/voters/addvoter')
@@ -15,11 +15,29 @@ function addVoter () {
     })
 }
 
+function updateVoter (username, weight) {
+  const data = {
+    user: username,
+    weight
+  }
+  axios.post('../../api/voters/updatevoter', data)
+    .then(() => {
+      console.log('ADDED_VOTER')
+    }).catch((e) => {
+      console.error(e)
+    })
+}
+
 export default function Agenda () {
+  const [value, setValue] = useState(0)
+
   /**
    * Managing Sessions
    */
-  const { data: session, status } = useSession()
+  const {
+    data: session,
+    status
+  } = useSession()
   const [isInDatabase, setIsInDatabase] = useState(false)
   if (session && !isInDatabase) {
     setIsInDatabase(true)
@@ -41,23 +59,26 @@ export default function Agenda () {
   /**
    * Retrieving Data for the Cards
    */
-  const [agendaItems, setAgendaItems] = useState([])
+  const [userRows, setUserRows] = useState([])
+  const [refreshToken, setRefreshToken] = useState(Math.random())
   useEffect(() => {
-    async function load () {
-      const response = await fetch('/api/agenda/retrieve')
-      const agendaItems = await response.json()
-      setAgendaItems(agendaItems)
-    }
+    if (session) {
+      async function load () {
+        const response = await fetch('/api/voters/retrieve')
+        const userRows = await response.json()
+        setUserRows(userRows)
+      }
 
-    load().then()
-  })
+      load().then(setTimeout(() => setRefreshToken(Math.random()), 2500))
+    }
+  }, [refreshToken])
 
   return (
     <>
       <Head>
         <title>Assembly Management Tool</title>
         <meta name="description" content="Digital Voting for Assemblys by Neuland Ingolstadt"/>
-        <link rel="icon" href='https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg'/>
+        <link rel="icon" href="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"/>
       </Head>
 
       <Navbar bg="light" variant="light">
@@ -65,8 +86,8 @@ export default function Agenda () {
           <Link href="../">
             <Navbar.Brand>
               <img
-                src='https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg'
-                alt='Logo'
+                src="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"
+                alt="Logo"
                 className={`d-inline-block align-top ${styles.logo}`}
               />{' '}
               Assembly Management Tool
@@ -136,21 +157,50 @@ export default function Agenda () {
       </Navbar>
 
       {session &&
-      <>
-        <center>
-          <h3 className={styles.title}>Agenda</h3>
-        </center>
+        <>
+          <center>
+            <h3 className={styles.title}>Users</h3>
+          </center>
 
-        {agendaItems.map((item, idx) => {
-          return <Card className={styles.card} key={idx}>
-                    <Card.Title>{item.title}</Card.Title>
-                    {item.active > 0 && <Card.Subtitle>Active</Card.Subtitle>}
-                    <Card.Body>
+          {userRows.length > 0 &&
+            <Table striped bordered responsive>
+              <thead>
+              <tr>
+                <th>User</th>
+                <th>Weight</th>
+                <th>Expires</th>
+                <th>Last seen</th>
+                <td>New weight</td>
+              </tr>
+              </thead>
+              <tbody>
+              {userRows.map((item, idx) => {
+                return <tr key={idx}>
+                  <td>{item.user}</td>
+                  <td>{item.weight}</td>
+                  <td>{new Date(item.expires).toLocaleString()}</td>
+                  <td>{new Date(item.loggedin).toLocaleString()}</td>
+                  <td>
+                    <span>0</span>
+                    <input type={'range'}
+                           name={'weight'}
+                           max={3}
+                           value={value}
+                           onChange={(e) => {
+                             setValue(e.target.valueAsNumber)
+                             updateVoter(item.user, e.target.valueAsNumber)
+                           }}
+                    />
+                    <span>3</span>
+                  </td>
+                </tr>
+              })
+              }
+              </tbody>
 
-                    </Card.Body>
-                  </Card>
-        })}
-      </>}
+            </Table>
+          }
+        </>}
     </>
   )
 }

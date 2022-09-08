@@ -1,5 +1,6 @@
 import Credentials from 'next-auth/providers/credentials'
 import NextAuth from 'next-auth'
+
 const ldap = require('ldapjs')
 
 const options = {
@@ -7,8 +8,15 @@ const options = {
     Credentials({
       name: 'LDAP',
       credentials: {
-        username: { label: 'DN', type: 'text', placeholder: '' },
-        password: { label: 'Password', type: 'password' }
+        username: {
+          label: 'User',
+          type: 'text',
+          placeholder: ''
+        },
+        password: {
+          label: 'Password',
+          type: 'password'
+        }
       },
       authorize: (credentials) => {
         // You might want to pull this call out so we're not making a new LDAP client on every login attemp
@@ -18,10 +26,9 @@ const options = {
 
         // Essentially promisify the LDAPJS client.bind function
         return new Promise((resolve, reject) => {
-          const username = process.env.LDAP_COMMONNAME + credentials.username + process.env.LDAP_ORGANIZATIONAL_ADRESS
-          console.log(username)
+          const constUsername = process.env.LDAP_COMMONNAME + credentials.username + process.env.LDAP_ORGANIZATIONAL_ADRESS
 
-          client.bind(username, credentials.password, (error) => {
+          client.bind(constUsername, credentials.password, async (error) => {
             if (error) {
               console.error('Failed')
               reject(error)
@@ -39,6 +46,11 @@ const options = {
   ],
   callbacks: {
     jwt: async ({ token, user, account, profile, isNewUser }) => {
+      const isSignIn = !!user
+      if (isSignIn) {
+        token.username = user.username
+        token.password = user.password
+      }
       return token
     },
     session: async ({ session, token, user }) => {

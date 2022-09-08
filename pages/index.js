@@ -39,11 +39,23 @@ async function onAbstSubmit () {
     })
 }
 
+function addVoter () {
+  axios.post('../../api/voters/addvoter')
+    .then(() => {
+      console.log('ADDED_VOTER')
+    })
+}
+
 export default function Home () {
   /**
    * Managing Sessions
    */
   const { data: session, status } = useSession()
+  const [isInDatabase, setIsInDatabase] = useState(false)
+  if (session && !isInDatabase) {
+    setIsInDatabase(true)
+    addVoter()
+  }
 
   /**
    * Managing of the Hamburger Menu
@@ -92,7 +104,6 @@ export default function Home () {
         setQuotation(false)
       }
     }
-
     load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
   }, [refreshToken])
 
@@ -143,6 +154,11 @@ export default function Home () {
               <li>
                 <Link href="admin">
                   <h4>Administration</h4>
+                </Link>
+              </li>
+              <li>
+                <Link href="useradmin">
+                  <h4>User Administration</h4>
                 </Link>
               </li>
 

@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { Container, Navbar, Offcanvas } from 'react-bootstrap'
 import React, { useEffect, useState } from 'react'
 import { signIn, signOut, useSession } from 'next-auth/react'
@@ -12,11 +13,23 @@ import SpeakerCard from '../components/admin/SpeakerCard'
 import VotingAdminCard from '../components/admin/VotingAdminCard'
 import VotingHistoryAdminCard from '../components/admin/VotingHistoryAdminCard'
 
+function addVoter () {
+  axios.post('../../api/voters/addvoter')
+    .then(() => {
+      console.log('ADDED_VOTER')
+    })
+}
+
 export default function Admin () {
   /**
    * Managing Sessions
    */
   const { data: session, status } = useSession()
+  const [isInDatabase, setIsInDatabase] = useState(false)
+  if (session && !isInDatabase) {
+    setIsInDatabase(true)
+    addVoter()
+  }
 
   /**
    * Managing of the Hamburger Menu
@@ -116,6 +129,11 @@ export default function Admin () {
               <li>
                 <Link href="admin">
                   <h4>Administration</h4>
+                </Link>
+              </li>
+              <li>
+                <Link href="useradmin">
+                  <h4>User Administration</h4>
                 </Link>
               </li>
 
