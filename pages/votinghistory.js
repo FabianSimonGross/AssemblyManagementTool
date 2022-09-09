@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { Container, Navbar, Offcanvas } from 'react-bootstrap'
-import React, { useEffect, useState } from 'react'
-import { signIn, signOut, useSession } from 'next-auth/react'
 
 import Hamburger from 'hamburger-react'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import Head from 'next/head'
-import HistoryCard from '../components/voting/HistoryCard'
 import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import { Container, Navbar, Offcanvas } from 'react-bootstrap'
+import HistoryCard from '../components/voting/HistoryCard'
 import styles from '../styles/Home.module.css'
 
 function addVoter () {
@@ -20,10 +20,12 @@ export default function Admin () {
   /**
    * Managing Sessions
    */
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
   const [isInDatabase, setIsInDatabase] = useState(false)
+  const [isAdmin, setAdmin] = useState(false)
   if (session && !isInDatabase) {
     setIsInDatabase(true)
+    setAdmin(session.user.isAdmin)
     addVoter()
   }
 
@@ -46,19 +48,23 @@ export default function Admin () {
   const [motionItems, setMotionsItems] = useState([])
   useEffect(() => {
     async function load () {
-      const motionResponse = await fetch('/api/voting/retrieve')
-      const motionItems = await motionResponse.json()
-      setMotionsItems(motionItems)
+      if (session) {
+        const motionResponse = await fetch('/api/voting/retrieve')
+        const motionItems = await motionResponse.json()
+        setMotionsItems(motionItems)
+      }
     }
+
     load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
-  }, [refreshToken])
+  }, [refreshToken]
+  )
 
   return (
     <>
       <Head>
         <title>Assembly Management Tool</title>
         <meta name="description" content="Digital Voting for Assemblys by Neuland Ingolstadt"/>
-        <link rel="icon" href='https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg'/>
+        <link rel="icon" href="https://assets.neuland.app/StudVer_Logo_ohne%20Schrift.svg"/>
       </Head>
 
       <Navbar bg="light" variant="light">
@@ -97,16 +103,19 @@ export default function Admin () {
                   <h4>Voting History</h4>
                 </Link>
               </li>
-              <li>
-                <Link href="admin">
-                  <h4>Administration</h4>
-                </Link>
-              </li>
-              <li>
-                <Link href="useradmin">
-                  <h4>User Administration</h4>
-                </Link>
-              </li>
+              {isAdmin && <>
+                <li>
+                  <Link href="admin">
+                    <h4>Administration</h4>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="useradmin">
+                    <h4>User Administration</h4>
+                  </Link>
+                </li>
+              </>
+              }
 
               {!session &&
                 <li>

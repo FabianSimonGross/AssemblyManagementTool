@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
-import React, { useEffect, useState } from 'react'
-import { signIn, signOut, useSession } from 'next-auth/react'
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 
 import Hamburger from 'hamburger-react'
+import { signIn, signOut, useSession } from 'next-auth/react'
+import Head from 'next/head'
 import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import { Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
+import styles from '../styles/Home.module.css'
 
 function addVoter () {
   axios.post('../../api/voters/addvoter')
@@ -19,10 +19,12 @@ export default function Agenda () {
   /**
    * Managing Sessions
    */
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
   const [isInDatabase, setIsInDatabase] = useState(false)
+  const [isAdmin, setAdmin] = useState(false)
   if (session && !isInDatabase) {
     setIsInDatabase(true)
+    setAdmin(session.user.isAdmin)
     addVoter()
   }
 
@@ -44,9 +46,11 @@ export default function Agenda () {
   const [agendaItems, setAgendaItems] = useState([])
   useEffect(() => {
     async function load () {
-      const response = await fetch('/api/agenda/retrieve')
-      const agendaItems = await response.json()
-      setAgendaItems(agendaItems)
+      if (session) {
+        const response = await fetch('/api/agenda/retrieve')
+        const agendaItems = await response.json()
+        setAgendaItems(agendaItems)
+      }
     }
 
     load().then()
@@ -96,16 +100,19 @@ export default function Agenda () {
                   <h4>Voting History</h4>
                 </Link>
               </li>
-              <li>
-                <Link href="admin">
-                  <h4>Administration</h4>
-                </Link>
-              </li>
-              <li>
-                <Link href="useradmin">
-                  <h4>User Administration</h4>
-                </Link>
-              </li>
+              {isAdmin && <>
+                <li>
+                  <Link href="admin">
+                    <h4>Administration</h4>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="useradmin">
+                    <h4>User Administration</h4>
+                  </Link>
+                </li>
+              </>
+              }
 
               {!session &&
                 <li>

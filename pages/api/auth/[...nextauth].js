@@ -34,9 +34,18 @@ const options = {
               reject(error)
             } else {
               console.log('Logged in')
-              resolve({
-                username: credentials.username,
-                password: credentials.password
+
+              client.search(process.env.LDAP_ADMIN, { scope: 'base' }, function (error, res) {
+                if (error) {
+                  console.error('No Admin')
+                }
+                res.on('searchEntry', async (data) => {
+                  resolve({
+                    username: credentials.username,
+                    password: credentials.password,
+                    isAdmin: await data.object.member.includes(constUsername)
+                  })
+                })
               })
             }
           })
@@ -50,13 +59,14 @@ const options = {
       if (isSignIn) {
         token.username = user.username
         token.password = user.password
+        token.isAdmin = user.isAdmin
       }
       return token
     },
     session: async ({ session, token, user }) => {
       return {
         ...session,
-        user: { username: token.username }
+        user: { username: token.username, isAdmin: token.isAdmin }
       }
     }
   },

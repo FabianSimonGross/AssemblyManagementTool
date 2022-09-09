@@ -49,13 +49,16 @@ function addVoter () {
 
 export default function Home () {
   const router = useRouter()
+
   /**
    * Managing Sessions
    */
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
   const [isInDatabase, setIsInDatabase] = useState(false)
+  const [isAdmin, setAdmin] = useState(false)
   if (session && !isInDatabase) {
     setIsInDatabase(true)
+    setAdmin(session.user.isAdmin)
     addVoter()
   }
 
@@ -84,23 +87,23 @@ export default function Home () {
   const [weight, setWeight] = useState(0)
   useEffect(() => {
     async function load () {
-      const motionResponse = await fetch('/api/voting/retrieve')
-      const motionItems = await motionResponse.json()
-      setMotionsItems(motionItems)
-
-      const currentMotionResponse = await fetch('/api/voting/retrievecurrent')
-      const currentMotionItem = await currentMotionResponse.json()
-      setCurrentAgendaItem(currentMotionItem)
-
-      const agendaResponse = await fetch('/api/agenda/retrievecurrent')
-      const agendaItems = await agendaResponse.json()
-      setAgendaItems(agendaItems)
-
-      const speakersResponse = await fetch('/api/speakers/retrieve')
-      const speakersItems = await speakersResponse.json()
-      setSpeakersItems(speakersItems)
-
       if (session) {
+        const motionResponse = await fetch('/api/voting/retrieve')
+        const motionItems = await motionResponse.json()
+        setMotionsItems(motionItems)
+
+        const currentMotionResponse = await fetch('/api/voting/retrievecurrent')
+        const currentMotionItem = await currentMotionResponse.json()
+        setCurrentAgendaItem(currentMotionItem)
+
+        const agendaResponse = await fetch('/api/agenda/retrievecurrent')
+        const agendaItems = await agendaResponse.json()
+        setAgendaItems(agendaItems)
+
+        const speakersResponse = await fetch('/api/speakers/retrieve')
+        const speakersItems = await speakersResponse.json()
+        setSpeakersItems(speakersItems)
+
         const response = await fetch('/api/voters/retrieve')
         const userRows = await response.json()
         userRows.map((item) => {
@@ -110,14 +113,14 @@ export default function Home () {
           }
           return null
         })
-      }
 
-      const quotationResponse = await fetch('/api/settings/retrievequotation')
-      const quotation = await quotationResponse.json()
-      if (quotation[0].bool !== 0) {
-        setQuotation(true)
-      } else {
-        setQuotation(false)
+        const quotationResponse = await fetch('/api/settings/retrievequotation')
+        const quotation = await quotationResponse.json()
+        if (quotation[0].bool !== 0) {
+          setQuotation(true)
+        } else {
+          setQuotation(false)
+        }
       }
     }
     load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
@@ -167,26 +170,29 @@ export default function Home () {
                   <h4>Voting History</h4>
                 </Link>
               </li>
-              <li>
-                <Link href="admin">
-                  <h4>Administration</h4>
-                </Link>
-              </li>
-              <li>
-                <Link href="useradmin">
-                  <h4>User Administration</h4>
-                </Link>
-              </li>
+              {isAdmin && <>
+                <li>
+                  <Link href="admin">
+                    <h4>Administration</h4>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="useradmin">
+                    <h4>User Administration</h4>
+                  </Link>
+                </li>
+              </>
+              }
 
               {!session &&
-              <li>
-                <Link href="/api/auth/signin">
-                  <a onClick={event => {
-                    event.preventDefault()
-                    signIn().then()
-                  }}>
-                    <h4>Sign In</h4>
-                  </a>
+                <li>
+                  <Link href="/api/auth/signin">
+                    <a onClick={event => {
+                      event.preventDefault()
+                      signIn().then()
+                    }}>
+                      <h4>Sign In</h4>
+                    </a>
                 </Link>
               </li>}
 
@@ -314,7 +320,7 @@ export default function Home () {
                   >ABSTENTION</Button>
               </ButtonGroup>
               </div>
-              )}
+            )}
           </Card.Body>
         </Card>
 

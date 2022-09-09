@@ -22,25 +22,22 @@ function updateVoter (username, weight) {
   }
   axios.post('../../api/voters/updatevoter', data)
     .then(() => {
-      console.log('ADDED_VOTER')
+      console.log('Update_Voter')
     }).catch((e) => {
       console.error(e)
     })
 }
 
 export default function Agenda () {
-  const [value, setValue] = useState(0)
-
   /**
    * Managing Sessions
    */
-  const {
-    data: session,
-    status
-  } = useSession()
+  const { data: session } = useSession()
   const [isInDatabase, setIsInDatabase] = useState(false)
+  const [isAdmin, setAdmin] = useState(false)
   if (session && !isInDatabase) {
     setIsInDatabase(true)
+    setAdmin(session.user.isAdmin)
     addVoter()
   }
 
@@ -62,15 +59,15 @@ export default function Agenda () {
   const [userRows, setUserRows] = useState([])
   const [refreshToken, setRefreshToken] = useState(Math.random())
   useEffect(() => {
-    if (session) {
-      async function load () {
+    async function load () {
+      if (session) {
         const response = await fetch('/api/voters/retrieve')
         const userRows = await response.json()
         setUserRows(userRows)
       }
-
-      load().then(setTimeout(() => setRefreshToken(Math.random()), 2500))
     }
+
+    load().then(setTimeout(() => setRefreshToken(Math.random()), 2500))
   }, [refreshToken])
 
   return (
@@ -117,16 +114,19 @@ export default function Agenda () {
                   <h4>Voting History</h4>
                 </Link>
               </li>
-              <li>
-                <Link href="admin">
-                  <h4>Administration</h4>
-                </Link>
-              </li>
-              <li>
-                <Link href="useradmin">
-                  <h4>User Administration</h4>
-                </Link>
-              </li>
+              {isAdmin && <>
+                <li>
+                  <Link href="admin">
+                    <h4>Administration</h4>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="useradmin">
+                    <h4>User Administration</h4>
+                  </Link>
+                </li>
+              </>
+              }
 
               {!session &&
                 <li>
@@ -185,9 +185,8 @@ export default function Agenda () {
                     <input type={'range'}
                            name={'weight'}
                            max={3}
-                           value={value}
+                           value={item.weight}
                            onChange={(e) => {
-                             setValue(e.target.valueAsNumber)
                              updateVoter(item.user, e.target.valueAsNumber)
                            }}
                     />
