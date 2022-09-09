@@ -34,5 +34,6 @@ export default async function handler (req, res) {
     // Not Signed in
     res.status(401)
   }
+  res.setHeader('Content-Type', 'application/json')
   res.end()
 }
