@@ -13,7 +13,7 @@ export default async function handler (req, res) {
     })
 
     await executeQuery({
-      query: 'UPDATE voters SET voters.voted = voters.voted + 1'
+      query: 'UPDATE voters SET voters.voted = 0'
     })
   } catch (error) {
     res.json(error)
