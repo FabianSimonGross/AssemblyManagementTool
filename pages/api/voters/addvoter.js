@@ -12,8 +12,8 @@ export default async function handler (req, res) {
     // Signed in
     const date = new Date(token.exp * 1000)
     await executeQuery({
-      query: 'REPLACE INTO voters(user, expires) VALUES(?, ?)',
-      values: [token.username, date]
+      query: 'INSERT INTO voters(user, expires) values(?, ?) ON DUPLICATE KEY UPDATE user=?',
+      values: [token.username, date, token.username]
     })
   } else {
     // Not Signed in

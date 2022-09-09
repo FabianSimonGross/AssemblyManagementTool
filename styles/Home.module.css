@@ -37,3 +37,8 @@
 .doughnut {
     max-height: 250px;
 }
+
+.buttongroup {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}

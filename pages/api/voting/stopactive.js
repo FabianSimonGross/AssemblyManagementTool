@@ -11,6 +11,10 @@ export default async function handler (req, res) {
       res.setHeader('Cache-Control', 'max-age=1')
       res.end(JSON.stringify(r))
     })
+
+    await executeQuery({
+      query: 'UPDATE voters SET voters.voted = voters.voted + 1'
+    })
   } catch (error) {
     res.json(error)
     res.statusCode(405).end()

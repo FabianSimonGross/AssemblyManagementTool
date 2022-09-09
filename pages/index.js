@@ -1,13 +1,14 @@
-import { Button, ButtonGroup, Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
-import React, { useEffect, useState } from 'react'
-import { signIn, signOut, useSession } from 'next-auth/react'
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import axios from 'axios'
 
 import Hamburger from 'hamburger-react'
-import HistoryCard from '../components/voting/HistoryCard'
+import { signIn, signOut, useSession } from 'next-auth/react'
+import Head from 'next/head'
 import Link from 'next/link'
-import axios from 'axios'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
+import { Button, ButtonGroup, Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
+import HistoryCard from '../components/voting/HistoryCard'
+import styles from '../styles/Home.module.css'
 
 async function onYesSubmit () {
   axios.post('/api/submitvote/yes')
@@ -47,6 +48,7 @@ function addVoter () {
 }
 
 export default function Home () {
+  const router = useRouter()
   /**
    * Managing Sessions
    */
@@ -78,6 +80,8 @@ export default function Home () {
   const [agendaItems, setAgendaItems] = useState([])
   const [speakersItems, setSpeakersItems] = useState([])
   const [isQuotation, setQuotation] = useState(false)
+  const [voted, setVoted] = useState(0)
+  const [weight, setWeight] = useState(0)
   useEffect(() => {
     async function load () {
       const motionResponse = await fetch('/api/voting/retrieve')
@@ -96,6 +100,18 @@ export default function Home () {
       const speakersItems = await speakersResponse.json()
       setSpeakersItems(speakersItems)
 
+      if (session) {
+        const response = await fetch('/api/voters/retrieve')
+        const userRows = await response.json()
+        userRows.map((item) => {
+          if (item.user === session.user.username) {
+            setWeight(item.weight)
+            setVoted(item.voted)
+          }
+          return null
+        })
+      }
+
       const quotationResponse = await fetch('/api/settings/retrievequotation')
       const quotation = await quotationResponse.json()
       if (quotation[0].bool !== 0) {
@@ -105,7 +121,7 @@ export default function Home () {
       }
     }
     load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
-  }, [refreshToken])
+  }, [refreshToken, router])
 
   return (
     <>
@@ -275,13 +291,30 @@ export default function Home () {
 
           {currentMotion.length < 1 && <Card.Subtitle>No Active Question</Card.Subtitle>}
           <Card.Body>
-            {currentMotion.length > 0 &&
-              <ButtonGroup variant="contained" aria-label="outlined primary button group">
-                <Button onClick={() => onYesSubmit()}>YES</Button>
-                <Button onClick={() => onNoSubmit()}>NO</Button>
-                <Button onClick={() => onAbstSubmit()}>ABSTENTION</Button>
+            {currentMotion.length > 0 && Array.from({ length: weight - voted }, (_, idx) =>
+              <div key={idx} className={styles.buttongroup}>
+                <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                  <Button
+                    onClick={() => {
+                      onYesSubmit()
+                      setVoted(voted + 1)
+                    }}
+                  >YES</Button>
+                  <Button
+                    onClick={() => {
+                      onNoSubmit()
+                      setVoted(voted + 1)
+                    }}
+                  >NO</Button>
+                  <Button
+                    onClick={() => {
+                      onAbstSubmit()
+                      setVoted(voted + 1)
+                    }}
+                  >ABSTENTION</Button>
               </ButtonGroup>
-            }
+              </div>
+              )}
           </Card.Body>
         </Card>
 

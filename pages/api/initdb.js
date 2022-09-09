@@ -35,7 +35,7 @@ export default async function handler (req, res) {
     })
 
     await executeQuery({
-      query: 'CREATE TABLE IF NOT EXISTS `voting`.`voters` (`user` VARCHAR(250) NOT NULL, `weight` INT NOT NULL, `expires` TIMESTAMP, `loggedin` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(user))',
+      query: 'CREATE TABLE IF NOT EXISTS `voting`.`voters` (`user` VARCHAR(250) NOT NULL, `weight` INT NOT NULL, `voted` INT NOT NULL, `expires` TIMESTAMP, `loggedin` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(user))',
       values: null
     }).then(() => {
       res.statusCode = 200
