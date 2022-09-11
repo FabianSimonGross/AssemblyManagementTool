@@ -8,7 +8,7 @@ export default async function handler (req, res) {
     secret: process.env.NEXT_AUTH_SECRET
   })
 
-  if (token.isAdmin) {
+  if (token) {
     // Signed in
     await executeQuery({
       query: 'SELECT * FROM voters',

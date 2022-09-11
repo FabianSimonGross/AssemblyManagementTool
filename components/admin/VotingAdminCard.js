@@ -42,7 +42,9 @@ export default function VotingAdminCard ({ currentMotionItem }) {
   return <Card className={styles.card} id={'voting'}>
     <Card.Title>Voting Administration</Card.Title>
     {currentMotionItem.length > 0 && currentMotionItem.map((item, idx) => {
-      return <Card.Subtitle key={idx}>{item.title}</Card.Subtitle>
+      return <div key={idx}>
+      <Card.Subtitle>{item.title}</Card.Subtitle>
+      </div>
     })}
 
     {currentMotionItem.length < 1 && <Card.Subtitle>No Active Question</Card.Subtitle>}
