@@ -1,5 +1,5 @@
-import Credentials from 'next-auth/providers/credentials'
 import NextAuth from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
 
 const ldap = require('ldapjs')
 
@@ -43,7 +43,7 @@ const options = {
                   resolve({
                     username: credentials.username,
                     password: credentials.password,
-                    isAdmin: await data.object.member.includes(constUsername)
+                    isAdmin: await data.object.uniqueMember.includes(constUsername)
                   })
                 })
               })
