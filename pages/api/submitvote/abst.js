@@ -1,5 +1,5 @@
-import { getToken } from 'next-auth/jwt'
 import executeQuery from '../../../lib/db'
+import { getToken } from 'next-auth/jwt'
 
 export default async function handler (req, res) {
   const token = await getToken({

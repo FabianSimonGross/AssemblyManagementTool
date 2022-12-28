@@ -34,7 +34,7 @@ export default async function handler (req, res) {
     )
 
     await executeSqlQueryWithoutValues(
-      'CREATE TABLE IF NOT EXISTS ' + process.env.MYSQL_DATABASE + '.`voters` ( `user` VARCHAR(250) NOT NULL , `weight` INT NULL DEFAULT NULL , `voted` INT NULL DEFAULT NULL , `expires` TIMESTAMP NOT NULL , `loggedin` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`user`))',
+      'CREATE TABLE IF NOT EXISTS ' + process.env.MYSQL_DATABASE + '.`voters` ( `user` VARCHAR(250) NOT NULL , `weight` INT NULL DEFAULT 0 , `voted` INT NULL DEFAULT 0 , `expires` TIMESTAMP NOT NULL , `loggedin` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`user`))',
       res
     )
 
