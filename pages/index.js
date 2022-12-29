@@ -1,14 +1,17 @@
 import axios from 'axios'
-
 import Hamburger from 'hamburger-react'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
+
 import { Button, ButtonGroup, Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
+import io from 'socket.io-client'
 import HistoryCard from '../components/voting/HistoryCard'
 import styles from '../styles/Home.module.css'
+
+let socket
 
 async function onYesSubmit () {
   axios.post('/api/submitvote/yes')
@@ -45,10 +48,25 @@ function addVoter () {
     .then(() => {
       console.log('ADDED_VOTER')
     })
+    .catch((e) => {
+      console.error(e)
+    })
 }
 
 export default function Home () {
   const router = useRouter()
+
+  useEffect(() => {
+    socketInitializer()
+  }, [])
+  const socketInitializer = async () => {
+    await fetch('/api/socket')
+    socket = io()
+
+    socket.on('Update Page', () => {
+      setToUpdate(true)
+    })
+  }
 
   /**
    * Managing Sessions
@@ -77,6 +95,7 @@ export default function Home () {
   /**
    * Retrieving Data for the Cards
    */
+  const [toUpdate, setToUpdate] = useState(false)
   const [refreshToken, setRefreshToken] = useState(Math.random())
   const [motionItems, setMotionsItems] = useState([])
   const [currentMotion, setCurrentAgendaItem] = useState([])
@@ -122,9 +141,14 @@ export default function Home () {
           setQuotation(false)
         }
       }
+
+      if (toUpdate) {
+        setToUpdate(false)
+      }
     }
+
     load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
-  }, [refreshToken, router])
+  }, [refreshToken, router, toUpdate])
 
   return (
     <>
@@ -304,18 +328,21 @@ export default function Home () {
                     onClick={() => {
                       onYesSubmit()
                       setVoted(voted + 1)
+                      setToUpdate(true)
                     }}
                   >YES</Button>
                   <Button
                     onClick={() => {
                       onNoSubmit()
                       setVoted(voted + 1)
+                      setToUpdate(true)
                     }}
                   >NO</Button>
                   <Button
                     onClick={() => {
                       onAbstSubmit()
                       setVoted(voted + 1)
+                      setToUpdate(true)
                     }}
                   >ABSTENTION</Button>
               </ButtonGroup>

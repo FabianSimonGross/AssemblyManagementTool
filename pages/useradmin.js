@@ -56,6 +56,7 @@ export default function Agenda () {
   /**
    * Retrieving Data for the Cards
    */
+  const [toUpdate, setToUpdate] = useState(false)
   const [userRows, setUserRows] = useState([])
   const [refreshToken, setRefreshToken] = useState(Math.random())
   useEffect(() => {
@@ -65,10 +66,14 @@ export default function Agenda () {
         const userRows = await response.json()
         setUserRows(userRows)
       }
+
+      if (toUpdate) {
+        setToUpdate(false)
+      }
     }
 
     load().then(setTimeout(() => setRefreshToken(Math.random()), 2500))
-  }, [refreshToken])
+  }, [refreshToken, toUpdate])
 
   return (
     <>
@@ -188,6 +193,7 @@ export default function Agenda () {
                            value={item.weight}
                            onChange={(e) => {
                              updateVoter(item.user, e.target.valueAsNumber)
+                             setToUpdate(true)
                            }}
                     />
                     <span>3</span>

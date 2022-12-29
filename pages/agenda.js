@@ -43,6 +43,7 @@ export default function Agenda () {
   /**
    * Retrieving Data for the Cards
    */
+  const [toUpdate, setToUpdate] = useState(false)
   const [agendaItems, setAgendaItems] = useState([])
   useEffect(() => {
     async function load () {
@@ -51,10 +52,14 @@ export default function Agenda () {
         const agendaItems = await response.json()
         setAgendaItems(agendaItems)
       }
+
+      if (toUpdate) {
+        setToUpdate(false)
+      }
     }
 
     load().then()
-  })
+  }, [toUpdate])
 
   return (
     <>

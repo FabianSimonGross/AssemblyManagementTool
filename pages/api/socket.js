@@ -1,20 +1,23 @@
-import Server from 'socket.io'
+import { Server } from 'socket.io'
+import messageHandler from '../utils/sockets/messageHandler'
 
-const SocketHandler = (req, res) => {
+export default function SocketHandler (req, res) {
   if (res.socket.server.io) {
-    console.info('SOCKET', 'Server is already running')
-  } else {
-    console.info('SOCKET', 'Server is initializing')
-    const io = new Server(res.socket.server)
-    res.socket.server.io = io
-
-    io.on('connection', socket => {
-      socket.on('update', () => {
-        socket.broadcast.emit('update')
-      })
-    })
+    console.log('Already set up')
+    res.end()
+    return
   }
+
+  const io = new Server(res.socket.server)
+  res.socket.server.io = io
+
+  const onConnection = (socket) => {
+    messageHandler(io, socket)
+  }
+
+  // Define actions inside
+  io.on('connection', onConnection)
+
+  console.log('Setting up socket')
   res.end()
 }
-
-export default SocketHandler

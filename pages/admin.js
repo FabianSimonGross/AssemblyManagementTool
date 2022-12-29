@@ -48,6 +48,7 @@ export default function Admin () {
   /**
    * Retrieving Data for the Cards
    */
+  const [toUpdate, setToUpdate] = useState(false)
   const [refreshToken, setRefreshToken] = useState(Math.random())
   const [agendaItems, setAgendaItems] = useState([])
   const [speakersItems, setSpeakersItems] = useState([])
@@ -81,10 +82,14 @@ export default function Admin () {
         const currentMotionItem = await currentMotionResponse.json()
         setCurrentMotionItem(currentMotionItem)
       }
+
+      if (toUpdate) {
+        setToUpdate(false)
+      }
     }
 
     load().then(setTimeout(() => setRefreshToken(Math.random()), 2500))
-  }, [refreshToken])
+  }, [refreshToken, toUpdate])
 
   return (
     <>

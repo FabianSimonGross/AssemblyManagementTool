@@ -44,6 +44,7 @@ export default function Admin () {
   /**
    * Retrieving Data for the Cards
    */
+  const [toUpdate, setToUpdate] = useState(false)
   const [refreshToken, setRefreshToken] = useState(Math.random())
   const [motionItems, setMotionsItems] = useState([])
   useEffect(() => {
@@ -53,10 +54,14 @@ export default function Admin () {
         const motionItems = await motionResponse.json()
         setMotionsItems(motionItems)
       }
+
+      if (toUpdate) {
+        setToUpdate(false)
+      }
     }
 
     load().then(setTimeout(() => setRefreshToken(Math.random()), 5000))
-  }, [refreshToken]
+  }, [refreshToken, toUpdate]
   )
 
   return (
