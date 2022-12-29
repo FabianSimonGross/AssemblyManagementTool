@@ -1,7 +1,6 @@
-import { Button, Card, Form } from 'react-bootstrap'
-import React, { useState } from 'react'
-
 import axios from 'axios'
+import React, { useState } from 'react'
+import { Button, Card, Form } from 'react-bootstrap'
 import styles from '../../styles/Home.module.css'
 
 async function onAgendaAddSubmit (value) {
@@ -62,13 +61,19 @@ function onAgendaDeactivateCurrent () {
     })
 }
 
-export default function AgendaCard ({ pointsOfOrder }) {
+export default function AgendaCard ({
+  pointsOfOrder,
+  socket
+}) {
   const [agendaItem, setAgendaItem] = useState('')
   const [tickedItems] = useState([])
 
   if (tickedItems.length === 0) {
     pointsOfOrder.map((item) => {
-      tickedItems.push({ ...item, isChecked: false })
+      tickedItems.push({
+        ...item,
+        isChecked: false
+      })
       return null
     })
   }
@@ -106,8 +111,16 @@ export default function AgendaCard ({ pointsOfOrder }) {
                         value={item.title}
                         onChange={e => handleChange(e, pointsOfOrder)}
             />
-            {item.active < 1 && <Button variant={'link'} onClick={() => onAgendaSetCurrent(item.title)}>Activate</Button>}
-            {item.active > 0 && <Button variant={'link'} onClick={() => onAgendaDeactivateCurrent()}>Deactivate</Button>}
+
+            {item.active < 1 && <Button variant={'link'} onClick={() => {
+              onAgendaSetCurrent(item.title)
+              if (socket) socket.emit('Update Page')
+            }}>Activate</Button>}
+
+            {item.active > 0 && <Button variant={'link'} onClick={() => {
+              onAgendaDeactivateCurrent()
+              if (socket) socket.emit('Update Page')
+            }}>Deactivate</Button>}
           </div>
         })}
       </Form>
@@ -120,7 +133,10 @@ export default function AgendaCard ({ pointsOfOrder }) {
                id={'agendaitem'}
                name={'agendaitem'}
                value={agendaItem}
-               onChange={e => setAgendaItem(e.target.value)}
+               onChange={e => {
+                 setAgendaItem(e.target.value)
+                 if (socket) socket.emit('Update Page')
+               }}
         /><br/>
       </fieldset>
       <br/>
@@ -128,16 +144,29 @@ export default function AgendaCard ({ pointsOfOrder }) {
       <Button className={styles.button}
               variant={'outline-success'}
               onClick={() => {
-                onAgendaAddSubmit(agendaItem).then()
+                onAgendaAddSubmit(agendaItem)
+                if (socket) socket.emit('Update Page')
               }}>
         Add Agenda Item
       </Button>
 
-      <Button className={styles.button} variant={'outline-danger'} onClick={() => onAgendaRemoveSubmit(tickedItems)}>
+      <Button className={styles.button}
+              variant={'outline-danger'}
+              onClick={() => {
+                onAgendaRemoveSubmit(tickedItems)
+                if (socket) socket.emit('Update Page')
+              }}
+      >
         Remove Checked Agenda Item
       </Button>
 
-      <Button className={styles.button} variant={'danger'} onClick={() => { onAgendaClearSubmit().then() }}>
+      <Button className={styles.button}
+              variant={'danger'}
+              onClick={() => {
+                onAgendaClearSubmit().then()
+                if (socket) socket.emit('Update Page')
+              }}
+      >
         Clear Agenda
       </Button>
 

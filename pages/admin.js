@@ -6,6 +6,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Container, Navbar, Offcanvas } from 'react-bootstrap'
+import io from 'socket.io-client'
 
 import AgendaCard from '../components/admin/AgendaCard'
 import SpeakerCard from '../components/admin/SpeakerCard'
@@ -13,7 +14,28 @@ import VotingAdminCard from '../components/admin/VotingAdminCard'
 import VotingHistoryAdminCard from '../components/admin/VotingHistoryAdminCard'
 import styles from '../styles/Home.module.css'
 
-function addVoter () {
+function useSocket (url) {
+  const [socket, setSocket] = useState(io)
+  useEffect(() => {
+    fetch(url).finally(() => {
+      const socketio = io()
+      socketio.on('connect', () => {
+        console.log('Connected')
+      })
+      socketio.on('disconnect', () => {
+        console.log('Disconnected')
+      })
+      setSocket(socketio)
+    })
+    function cleanup () {
+      socket.disconnect()
+    }
+    return cleanup
+  }, [])
+  return socket
+}
+
+async function addVoter () {
   axios.post('../../api/voters/addvoter')
     .then(() => {
       console.log('ADDED_VOTER')
@@ -21,6 +43,8 @@ function addVoter () {
 }
 
 export default function Admin () {
+  const socket = useSocket('/api/socket')
+
   /**
    * Managing Sessions
    */
@@ -31,6 +55,8 @@ export default function Admin () {
     setIsInDatabase(true)
     setAdmin(session.user.isAdmin)
     addVoter()
+
+    if (socket) socket.emit('Changed Setting')
   }
 
   /**
@@ -179,13 +205,13 @@ export default function Admin () {
 
       {session &&
       <>
-        <AgendaCard pointsOfOrder={agendaItems}/>
+        <AgendaCard pointsOfOrder={agendaItems} socket={socket}/>
 
-        <SpeakerCard speakerItems={speakersItems} isQuotation={isQuotation}/>
+        <SpeakerCard speakerItems={speakersItems} isQuotation={isQuotation} socket={socket}/>
 
-        <VotingAdminCard currentMotionItem={currentMotionItem}/>
+        <VotingAdminCard currentMotionItem={currentMotionItem} socket={socket}/>
 
-        <VotingHistoryAdminCard votingItems={motionItems}/>
+        <VotingHistoryAdminCard votingItems={motionItems} socket={socket}/>
 
       </>}
     </>

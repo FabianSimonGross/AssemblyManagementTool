@@ -1,9 +1,9 @@
-import { Button, Card } from 'react-bootstrap'
+import axios from 'axios'
 import React, { useState } from 'react'
+import { Button, Card } from 'react-bootstrap'
+import styles from '../../styles/Home.module.css'
 
 import HistoryCard from '../voting/HistoryCard'
-import axios from 'axios'
-import styles from '../../styles/Home.module.css'
 
 function onAnalogeVotingSubmit (title, yes, no, abstention) {
   const data = {
@@ -30,7 +30,10 @@ function onVotingHistoryClearSubmit () {
     })
 }
 
-export default function VotingHistoryAdminCard ({ votingItems }) {
+export default function VotingHistoryAdminCard ({
+  votingItems,
+  socket
+}) {
   const [question, setQuestion] = useState('')
   const [yes, setYes] = useState(0)
   const [no, setNo] = useState(0)
@@ -81,10 +84,24 @@ export default function VotingHistoryAdminCard ({ votingItems }) {
         /><br/>
       </form>
       <br/>
-      <Button className={styles.button} variant={'outline-success'} onClick={() => onAnalogeVotingSubmit(question, yes, no, abs)}>
+
+      <Button className={styles.button}
+              variant={'outline-success'}
+              onClick={() => {
+                onAnalogeVotingSubmit(question, yes, no, abs)
+                if (socket) socket.emit('Update Page')
+              }}
+      >
         Add Analog Voting
       </Button>
-      <Button className={styles.button} variant={'danger'} onClick={() => onVotingHistoryClearSubmit()}>
+
+      <Button className={styles.button}
+              variant={'danger'}
+              onClick={() => {
+                onVotingHistoryClearSubmit()
+                if (socket) socket.emit('Update Page')
+              }}
+      >
         Clear Voting History
       </Button>
     </Card.Footer>

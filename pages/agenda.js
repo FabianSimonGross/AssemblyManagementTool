@@ -6,7 +6,29 @@ import Head from 'next/head'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
+import io from 'socket.io-client'
 import styles from '../styles/Home.module.css'
+
+function useSocket (url) {
+  const [socket, setSocket] = useState(io)
+  useEffect(() => {
+    fetch(url).finally(() => {
+      const socketio = io()
+      socketio.on('connect', () => {
+        console.log('Connected')
+      })
+      socketio.on('disconnect', () => {
+        console.log('Disconnected')
+      })
+      setSocket(socketio)
+    })
+    function cleanup () {
+      socket.disconnect()
+    }
+    return cleanup
+  }, [])
+  return socket
+}
 
 function addVoter () {
   axios.post('../../api/voters/addvoter')
@@ -16,6 +38,18 @@ function addVoter () {
 }
 
 export default function Agenda () {
+  /***
+   * Socket Management
+   */
+  const socket = useSocket('/api/socket')
+  useEffect(() => {
+    if (socket) {
+      socket.on('Update Page', () => {
+        setToUpdate(true)
+      })
+    }
+  }, [socket])
+
   /**
    * Managing Sessions
    */
@@ -26,6 +60,9 @@ export default function Agenda () {
     setIsInDatabase(true)
     setAdmin(session.user.isAdmin)
     addVoter()
+    console.log(socket.id)
+
+    if (socket) socket.emit('Update Page')
   }
 
   /**
@@ -148,21 +185,21 @@ export default function Agenda () {
       </Navbar>
 
       {session &&
-      <>
-        <center>
-          <h3 className={styles.title}>Agenda</h3>
-        </center>
+        <>
+          <center>
+            <h3 className={styles.title}>Agenda</h3>
+          </center>
 
-        {agendaItems.map((item, idx) => {
-          return <Card className={styles.card} key={idx}>
-                    <Card.Title>{item.title}</Card.Title>
-                    {item.active > 0 && <Card.Subtitle>Active</Card.Subtitle>}
-                    <Card.Body>
+          {agendaItems.map((item, idx) => {
+            return <Card className={styles.card} key={idx}>
+              <Card.Title>{item.title}</Card.Title>
+              {item.active > 0 && <Card.Subtitle>Active</Card.Subtitle>}
+              <Card.Body>
 
-                    </Card.Body>
-                  </Card>
-        })}
-      </>}
+              </Card.Body>
+            </Card>
+          })}
+        </>}
     </>
   )
 }

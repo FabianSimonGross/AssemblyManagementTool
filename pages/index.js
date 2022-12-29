@@ -11,7 +11,26 @@ import io from 'socket.io-client'
 import HistoryCard from '../components/voting/HistoryCard'
 import styles from '../styles/Home.module.css'
 
-let socket
+function useSocket (url) {
+  const [socket, setSocket] = useState(io)
+  useEffect(() => {
+    fetch(url).finally(() => {
+      const socketio = io()
+      socketio.on('connect', () => {
+        console.log('Connected')
+      })
+      socketio.on('disconnect', () => {
+        console.log('Disconnected')
+      })
+      setSocket(socketio)
+    })
+    function cleanup () {
+      socket.disconnect()
+    }
+    return cleanup
+  }, [])
+  return socket
+}
 
 async function onYesSubmit () {
   axios.post('/api/submitvote/yes')
@@ -56,17 +75,17 @@ function addVoter () {
 export default function Home () {
   const router = useRouter()
 
+  /***
+   * Socket Management
+   */
+  const socket = useSocket('/api/socket')
   useEffect(() => {
-    socketInitializer()
-  }, [])
-  const socketInitializer = async () => {
-    await fetch('/api/socket')
-    socket = io()
-
-    socket.on('Update Page', () => {
-      setToUpdate(true)
-    })
-  }
+    if (socket) {
+      socket.on('Update Page', () => {
+        setToUpdate(true)
+      })
+    }
+  }, [socket])
 
   /**
    * Managing Sessions
@@ -78,6 +97,8 @@ export default function Home () {
     setIsInDatabase(true)
     setAdmin(session.user.isAdmin)
     addVoter()
+
+    if (socket) socket.emit('Update Page')
   }
 
   /**
@@ -329,6 +350,7 @@ export default function Home () {
                       onYesSubmit()
                       setVoted(voted + 1)
                       setToUpdate(true)
+                      if (socket) socket.emit('Update Page')
                     }}
                   >YES</Button>
                   <Button
@@ -336,6 +358,7 @@ export default function Home () {
                       onNoSubmit()
                       setVoted(voted + 1)
                       setToUpdate(true)
+                      if (socket) socket.emit('Update Page')
                     }}
                   >NO</Button>
                   <Button
@@ -343,6 +366,7 @@ export default function Home () {
                       onAbstSubmit()
                       setVoted(voted + 1)
                       setToUpdate(true)
+                      if (socket) socket.emit('Update Page')
                     }}
                   >ABSTENTION</Button>
               </ButtonGroup>

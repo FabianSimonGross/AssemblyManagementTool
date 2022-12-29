@@ -1,7 +1,6 @@
-import { Button, Card, Form } from 'react-bootstrap'
-import React, { useState } from 'react'
-
 import axios from 'axios'
+import React, { useState } from 'react'
+import { Button, Card, Form } from 'react-bootstrap'
 import styles from '../../styles/Home.module.css'
 
 async function onSpeakerAddSubmit (speakerName, gender) {
@@ -54,14 +53,21 @@ async function onSpeakerActivateQuotationSubmit () {
     })
 }
 
-export default function SpeakerCard ({ speakerItems, isQuotation }) {
+export default function SpeakerCard ({
+  speakerItems,
+  isQuotation,
+  socket
+}) {
   const [speakerItem, setSpeakerItem] = useState('')
   const [gender, setGender] = useState('')
   const [tickedItems] = useState([])
 
   if (tickedItems.length === 0) {
     speakerItems.map((item) => {
-      tickedItems.push({ ...item, isChecked: false })
+      tickedItems.push({
+        ...item,
+        isChecked: false
+      })
       return null
     })
   }
@@ -188,16 +194,29 @@ export default function SpeakerCard ({ speakerItems, isQuotation }) {
               variant={'outline-success'}
               onClick={() => {
                 onSpeakerAddSubmit(speakerItem, gender).then()
-              }
-              }>
+                if (socket) socket.emit('Update Page')
+              }}
+      >
         Add Speaker
       </Button>
 
-      <Button className={styles.button} variant={'outline-warning'} onClick={() => onSpeakerActivateQuotationSubmit()}>
+      <Button className={styles.button}
+              variant={'outline-warning'}
+              onClick={() => {
+                onSpeakerActivateQuotationSubmit()
+                if (socket) socket.emit('Update Page')
+              }}
+      >
         Toggle quotation
       </Button>
 
-      <Button className={styles.button} variant={'outline-danger'} onClick={() => onSpeakerRemoveSubmit(tickedItems)}>
+      <Button className={styles.button}
+              variant={'outline-danger'}
+              onClick={() => {
+                onSpeakerRemoveSubmit(tickedItems)
+                if (socket) socket.emit('Update Page')
+              }}
+      >
         Remove Checked Speaker
       </Button>
 
@@ -205,8 +224,9 @@ export default function SpeakerCard ({ speakerItems, isQuotation }) {
               variant={'danger'}
               onClick={() => {
                 onSpeakerClearSubmit().then()
-              }
-      }>
+                if (socket) socket.emit('Update Page')
+              }}
+      >
         Clear Speakers&rsquo; List
       </Button>
     </Card.Footer>

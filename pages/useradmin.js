@@ -6,7 +6,29 @@ import Head from 'next/head'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Container, Navbar, Offcanvas, Table } from 'react-bootstrap'
+import io from 'socket.io-client'
 import styles from '../styles/Home.module.css'
+
+function useSocket (url) {
+  const [socket, setSocket] = useState(io)
+  useEffect(() => {
+    fetch(url).finally(() => {
+      const socketio = io()
+      socketio.on('connect', () => {
+        console.log('Connected')
+      })
+      socketio.on('disconnect', () => {
+        console.log('Disconnected')
+      })
+      setSocket(socketio)
+    })
+    function cleanup () {
+      socket.disconnect()
+    }
+    return cleanup
+  }, [])
+  return socket
+}
 
 function addVoter () {
   axios.post('../../api/voters/addvoter')
@@ -29,6 +51,18 @@ function updateVoter (username, weight) {
 }
 
 export default function Agenda () {
+  /***
+   * Socket Management
+   */
+  const socket = useSocket('/api/socket')
+  useEffect(() => {
+    if (socket) {
+      socket.on('Update Page', () => {
+        setToUpdate(true)
+      })
+    }
+  }, [socket])
+
   /**
    * Managing Sessions
    */
@@ -39,6 +73,7 @@ export default function Agenda () {
     setIsInDatabase(true)
     setAdmin(session.user.isAdmin)
     addVoter()
+    if (socket) socket.emit('Update Page')
   }
 
   /**
@@ -193,7 +228,7 @@ export default function Agenda () {
                            value={item.weight}
                            onChange={(e) => {
                              updateVoter(item.user, e.target.valueAsNumber)
-                             setToUpdate(true)
+                             if (socket) socket.emit('Update Page')
                            }}
                     />
                     <span>3</span>
