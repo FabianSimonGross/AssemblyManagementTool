@@ -9,6 +9,21 @@ export default async function handler (req, res) {
 
   if (token) {
     try {
+      let isAbleToVote
+      await executeQuery({
+        query: 'SELECT * FROM voters WHERE voters.user=?',
+        values: [token.username]
+      }).then(r => {
+        isAbleToVote = JSON.parse(JSON.stringify(r))
+      })
+
+      const weight = isAbleToVote[0].weight
+      const voted = isAbleToVote[0].voted
+      if (voted + 1 > weight) {
+        res.statusCode(401).end()
+        return
+      }
+
       await executeQuery({
         query: 'UPDATE motions SET motions.abstention = motions.abstention + 1 WHERE motions.active=1',
         values: null
