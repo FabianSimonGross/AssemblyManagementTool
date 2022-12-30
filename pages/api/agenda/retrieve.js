@@ -20,7 +20,7 @@ export default async function handler (req, res) {
       })
     } catch (error) {
       res.json(error)
-      res.statusCode(405).end()
+      res.status(405).end()
     }
   } else {
     res.status(401)

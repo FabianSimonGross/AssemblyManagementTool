@@ -21,7 +21,7 @@ export default async function handler (req, res) {
       const voted = isAbleToVote[0].voted
 
       if (voted + 1 > weight) {
-        res.statusCode(401).end()
+        res.status(401).end()
         return
       }
 
@@ -41,10 +41,10 @@ export default async function handler (req, res) {
       })
     } catch (error) {
       res.json(error)
-      res.statusCode(405).end()
+      res.status(405).end()
     }
   } else {
-    res.statusCode(401)
+    res.status(401)
   }
   res.end()
 }
