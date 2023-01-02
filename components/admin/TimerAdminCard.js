@@ -7,44 +7,20 @@ export default function TimerAdminCard ({ socket }) {
   const [api, setApi] = useState(null)
   const [time, setTime] = useState(180)
   const [activeTimer, setActiveTimer] = useState(false)
+  const [hasLocalTimer, setHasLocalTimer] = useState(false)
   const Completionist = () => <span>Time is up!</span>
-
-  useEffect(() => {
-    if (socket) {
-      socket.on('Timer Time', (distanceTime) => {
-        setActiveTimer(true)
-        if (distanceTime < 1) {
-          setActiveTimer(false)
-        }
-      })
-
-      socket.on('Start Timer', () => {
-        setActiveTimer(true)
-      })
-
-      socket.on('Pause Timer', () => {
-        setActiveTimer(true)
-      })
-
-      socket.on('Timer Time Change', (time) => {
-        setTime(time)
-      })
-
-      socket.on('Reset Timer', () => {
-        setActiveTimer(false)
-      })
-    }
-  }, [socket])
 
   function handleStartClick () {
     if (api) {
       api.start()
     }
+    setHasLocalTimer(true)
     socket.emit('Start Timer')
   }
 
   function handleResetClick () {
     if (api) api.stop()
+    setHasLocalTimer(false)
     socket.emit('Reset Timer')
     setTime(180)
   }
@@ -72,6 +48,37 @@ export default function TimerAdminCard ({ socket }) {
       setApi(countdown.getApi())
     }
   }
+
+  function noActiveTimerBool () {
+    if (!hasLocalTimer) return activeTimer
+  }
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('Timer Time', (distantTime) => {
+        setActiveTimer(true)
+        if (distantTime < 1) {
+          setActiveTimer(false)
+        }
+      })
+
+      socket.on('Start Timer', () => {
+        setActiveTimer(true)
+      })
+
+      socket.on('Pause Timer', () => {
+        setActiveTimer(true)
+      })
+
+      socket.on('Timer Time Change', (distantTime) => {
+        setTime(distantTime)
+      })
+
+      socket.on('Reset Timer', () => {
+        setActiveTimer(false)
+      })
+    }
+  }, [socket])
 
   return <Card className={styles.card} id={'timer'}>
     <Card.Title>Timer</Card.Title>
@@ -106,7 +113,7 @@ export default function TimerAdminCard ({ socket }) {
       <Button className={styles.button}
               variant={'success'}
               onClick={handleStartClick}
-              disabled={activeTimer}
+              disabled={noActiveTimerBool()}
       >
         Start
       </Button>
@@ -114,6 +121,7 @@ export default function TimerAdminCard ({ socket }) {
       <Button className={styles.button}
               variant={'outline-danger'}
               onClick={handlePauseClick}
+              disabled={noActiveTimerBool()}
       >
         Pause
       </Button>
@@ -121,6 +129,7 @@ export default function TimerAdminCard ({ socket }) {
       <Button className={styles.button}
               variant={'danger'}
               onClick={handleResetClick}
+              disabled={noActiveTimerBool()}
       >
         Reset
       </Button>
