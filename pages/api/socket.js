@@ -11,6 +11,26 @@ const ioHandler = (req, res) => {
       socket.on('Update Page', () => {
         socket.broadcast.emit('Update Page')
       })
+
+      socket.on('Timer Time Change', (time) => {
+        socket.broadcast.emit('Timer Time Change', time)
+      })
+
+      socket.on('Timer Time', (time) => {
+        socket.broadcast.emit('Timer Time', time)
+      })
+
+      socket.on('Start Timer', () => {
+        socket.broadcast.emit('Start Timer')
+      })
+
+      socket.on('Pause Timer', () => {
+        socket.broadcast.emit('Pause Timer')
+      })
+
+      socket.on('Reset Timer', () => {
+        socket.broadcast.emit('Reset Timer')
+      })
     })
 
     res.socket.server.io = io
@@ -18,12 +38,6 @@ const ioHandler = (req, res) => {
     console.log('socket.io already running')
   }
   res.end()
-}
-
-export const config = {
-  api: {
-    bodyParser: false
-  }
 }
 
 export default ioHandler

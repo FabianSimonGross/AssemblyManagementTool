@@ -61,10 +61,7 @@ function onAgendaDeactivateCurrent () {
     })
 }
 
-export default function AgendaCard ({
-  pointsOfOrder,
-  socket
-}) {
+export default function AgendaCard ({ pointsOfOrder, socket }) {
   const [agendaItem, setAgendaItem] = useState('')
   const [tickedItems] = useState([])
 

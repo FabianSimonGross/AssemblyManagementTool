@@ -53,6 +53,27 @@ async function onSpeakerActivateQuotationSubmit () {
     })
 }
 
+async function onSpeakerActivate (name) {
+  const data = { name }
+  axios.post('/api/speakers/setactive', data)
+    .then(() => {
+      console.info('SET_CURRENT_SPEAKER', data)
+    })
+    .catch(error => {
+      console.error(error)
+    })
+}
+
+async function onSpeakerDeactivate () {
+  axios.post('/api/speakers/setdeactive')
+    .then(() => {
+      console.info('DEACTIVATE_CURRENT_SPEAKER')
+    })
+    .catch(error => {
+      console.error(error)
+    })
+}
+
 export default function SpeakerCard ({
   speakerItems,
   isQuotation,
@@ -98,13 +119,23 @@ export default function SpeakerCard ({
       {!isQuotation && <ol>
         {speakerItems.map((item, idx) => {
           return <li key={idx}>
-              <Form.Check type={'checkbox'}
-                          id={'idx'}
-                          label={item.name + ' | ' + item.gender}
-                          value={item.name}
-                          onChange={e => handleChange(e)}
-              />
-            </li>
+            <Form.Check type={'checkbox'}
+                        id={'idx'}
+                        label={item.name + ' | ' + item.gender}
+                        value={item.name}
+                        onChange={e => handleChange(e)}
+            />
+
+            {item.active < 1 && <Button variant={'link'} onClick={() => {
+              onSpeakerActivate(item.name)
+              if (socket) socket.emit('Update Page')
+            }}>Activate</Button>}
+
+            {item.active > 0 && <Button variant={'link'} onClick={() => {
+              onSpeakerDeactivate()
+              if (socket) socket.emit('Update Page')
+            }}>Deactivate</Button>}
+          </li>
         }
         )}
       </ol>}
@@ -121,6 +152,17 @@ export default function SpeakerCard ({
                             value={item.name}
                             onChange={e => handleChange(e)}
                 />
+
+                {item.active < 1 && <Button variant={'link'} onClick={() => {
+                  onSpeakerActivate(item.name)
+                  if (socket) socket.emit('Update Page')
+                }}>Activate</Button>}
+
+                {item.active > 0 && <Button variant={'link'} onClick={() => {
+                  onSpeakerDeactivate()
+                  if (socket) socket.emit('Update Page')
+                }}>Deactivate</Button>}
+
               </li>
             }
             return null
@@ -142,6 +184,16 @@ export default function SpeakerCard ({
                             value={item.name}
                             onChange={e => handleChange(e)}
                 />
+
+                {item.active < 1 && <Button variant={'link'} onClick={() => {
+                  onSpeakerActivate(item.name)
+                  if (socket) socket.emit('Update Page')
+                }}>Activate</Button>}
+
+                {item.active > 0 && <Button variant={'link'} onClick={() => {
+                  onSpeakerDeactivate()
+                  if (socket) socket.emit('Update Page')
+                }}>Deactivate</Button>}
               </li>
             }
             return null
@@ -163,6 +215,16 @@ export default function SpeakerCard ({
                             value={item.name}
                             onChange={e => handleChange(e)}
                 />
+
+                {item.active < 1 && <Button variant={'link'} onClick={() => {
+                  onSpeakerActivate(item.name)
+                  if (socket) socket.emit('Update Page')
+                }}>Activate</Button>}
+
+                {item.active > 0 && <Button variant={'link'} onClick={() => {
+                  onSpeakerDeactivate()
+                  if (socket) socket.emit('Update Page')
+                }}>Deactivate</Button>}
               </li>
             }
             return null

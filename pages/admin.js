@@ -10,6 +10,7 @@ import io from 'socket.io-client'
 
 import AgendaCard from '../components/admin/AgendaCard'
 import SpeakerCard from '../components/admin/SpeakerCard'
+import TimerAdminCard from '../components/admin/TimerAdminCard'
 import VotingAdminCard from '../components/admin/VotingAdminCard'
 import VotingHistoryAdminCard from '../components/admin/VotingHistoryAdminCard'
 import styles from '../styles/Home.module.css'
@@ -206,6 +207,8 @@ export default function Admin () {
       {session &&
       <>
         <AgendaCard pointsOfOrder={agendaItems} socket={socket}/>
+
+        <TimerAdminCard socket={socket}></TimerAdminCard>
 
         <SpeakerCard speakerItems={speakersItems} isQuotation={isQuotation} socket={socket}/>
 

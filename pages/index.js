@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react'
 
 import { Button, ButtonGroup, Card, Container, Navbar, Offcanvas } from 'react-bootstrap'
 import io from 'socket.io-client'
+import TimerCard from '../components/dashboard/TimerCard'
 import HistoryCard from '../components/voting/HistoryCard'
 import styles from '../styles/Home.module.css'
 
@@ -278,6 +279,8 @@ export default function Home () {
           </Card.Footer>
         </Card>
 
+        <TimerCard socket={socket}></TimerCard>
+
         <Card className={styles.card}>
           <Card.Title>Speakers&rsquo; List</Card.Title>
           {!isQuotation && <Card.Subtitle>Not quoted</Card.Subtitle>}
@@ -285,7 +288,10 @@ export default function Home () {
           <Card.Body>
             {!isQuotation && <ol>
               {speakersItems.map((item, idx) => {
-                return <li key={idx}>{item.name + ' | ' + item.gender}</li>
+                if (!item.active) {
+                  return <li key={idx}>{item.name + ' | ' + item.gender}</li>
+                }
+                return <li key={idx}>{item.name + ' | ' + item.gender + ' | Speaking'}</li>
               }
               )}
             </ol>}
