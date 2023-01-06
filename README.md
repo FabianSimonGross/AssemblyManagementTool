@@ -46,4 +46,3 @@ There are 4 Endpoints:
   - quotation
 
 Each Retrieve Endpoint returns a json.
-There is one more endpoint to set up the database [/initdb]
